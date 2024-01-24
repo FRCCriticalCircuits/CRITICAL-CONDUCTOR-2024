@@ -43,19 +43,27 @@ public class Constants {
         // DRIVEBASE
         // -------------------------
 
-        public static final double DRIVE_PID0_P = 4.497E-06;
-        public static final double DRIVE_PID0_I = 0; 
-        public static final double DRIVE_PID0_D = 0;
+        public static final double DRIVE_PIDF0_P = 4.497E-06;
+        public static final double DRIVE_PIDF0_I = 0; 
+        public static final double DRIVE_PIDF0_D = 0;
+        public static final double DRIVE_PIDF0_F = 0;
 
         public static final double DRIVE_FEED_FORWARD_KV = 2.3854; // todo: characterize drive
         public static final double DRIVE_FEED_FORWARD_KA = 0.15778;
         public static final double DRIVE_FEED_FORWARD_KS = 0.41036;
 
-        public static final double TURN_PID0_P = 0.2922;
-        public static final double TURN_PID0_I = 0;
-        public static final double TURN_PID0_D = 0.0008;
+        public static final double TURN_PIDF0_P = 0.292;
+        public static final double TURN_PIDF0_I = 0;
+        public static final double TURN_PIDF0_D = 0;
+        public static final double TURN_PIDF0_F = 0.0008;
 
         // -------------------------
+
+        public static final double THETA_PID_P = 0;
+        public static final double THETA_PID_I = 0;
+        public static final double THETA_PID_D = 0;
+        public static final double THETA_MAX_DEG_S = Math.PI;
+        public static final double THETA_MAX_DEG_S2 = Math.PI*2;
 
     }
 
@@ -63,6 +71,7 @@ public class Constants {
 
         public static final double TRACK_WIDTH = 24 - 2.625;
         public static final double TRACK_WIDTH_METERS = Units.inchesToMeters(TRACK_WIDTH);
+        public static final double TRACK_RADIUS_METERS = Math.sqrt((TRACK_WIDTH_METERS * TRACK_WIDTH_METERS) + (TRACK_WIDTH_METERS * TRACK_WIDTH_METERS));
 
         public static final SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
             new Translation2d((TRACK_WIDTH_METERS / 2.0), (TRACK_WIDTH_METERS / 2.0)),
@@ -72,7 +81,7 @@ public class Constants {
         );
 
         public static final double DRIVE_WHEEL_DIAMETER_INCHES = 3.963;
-        public static final double DRIVE_WHEEL_DIAMTER_METERS = Units.inchesToMeters(DRIVE_WHEEL_DIAMETER_INCHES);
+        public static final double DRIVE_WHEEL_DIAMETER_METERS = Units.inchesToMeters(DRIVE_WHEEL_DIAMETER_INCHES);
 
         public static final double DRIVE_GEAR_RATIO = 6.75;
         public static final double TURN_GEAR_RATIO = 150.0 / 7.0;
@@ -99,13 +108,17 @@ public class Constants {
         // ENCODER OFFSETS
         // --------------------
 
-        public static final double FRONT_LEFT_OFFSET = -152.9;
-        public static final double FRONT_RIGHT_OFFSET = -87;
-        public static final double REAR_LEFT_OFFSET = 62.3;
-        public static final double REAR_RIGHT_OFFSET = 96.1;
+        public static final double FRONT_LEFT_OFFSET = -0.4318;
+        public static final double FRONT_RIGHT_OFFSET = -0.2419;
+        public static final double REAR_LEFT_OFFSET = 0.1791;
+        public static final double REAR_RIGHT_OFFSET = 0.2607;
 
         // --------------------
 
+
+        public static final double GYRO_REVERSED = -1;
+
+        public static final double GYRO_OFFSET = 180;
     }
 
     public static final double LOOP_TIME_S = 0.02;
