@@ -1,6 +1,9 @@
 package frc.team9062.robot.Subsystems;
 
+import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
@@ -17,7 +20,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.team9062.robot.Constants;
-import frc.team9062.robot.Util.RobotState.VERBOSITY_LEVEL;
 
 public class Module {
     String moduleName;
@@ -29,11 +31,10 @@ public class Module {
     RelativeEncoder driveEncoder, turnEncoder;
     CANcoder cancoder;
     SimpleMotorFeedforward arbfeedforward;
-    VERBOSITY_LEVEL verbosity;
     SwerveModuleState lastState;
     ShuffleboardTab moduleTab;
 
-    public Module(String moduleName, int driveId, int turnId, int cancoderId, double offset, boolean driveReversed, boolean encoderReversed, VERBOSITY_LEVEL verbosity) {
+    public Module(String moduleName, int driveId, int turnId, int cancoderId, double offset, boolean driveReversed, boolean encoderReversed) {
         this.moduleName = moduleName;
         this.driveId = driveId;
         this.turnId = turnId;
@@ -41,11 +42,19 @@ public class Module {
         this.offset = offset;
         this.driveReversed = driveReversed;
         this.encoderReversed = encoderReversed;
-        this.verbosity = verbosity;
 
         drive = new CANSparkMax(driveId, MotorType.kBrushless);
         turn = new CANSparkMax(turnId, MotorType.kBrushless);
         cancoder = new CANcoder(cancoderId, "");
+
+        cancoder.getConfigurator().apply(
+            new MagnetSensorConfigs()
+                .withAbsoluteSensorRange(AbsoluteSensorRangeValue.Signed_PlusMinusHalf)
+                .withSensorDirection(
+                    encoderReversed ? 
+                        SensorDirectionValue.CounterClockwise_Positive : SensorDirectionValue.Clockwise_Positive
+                ).withMagnetOffset(offset)
+        );
 
         arbfeedforward = new SimpleMotorFeedforward(
             Constants.TUNED_CONSTANTS.DRIVE_FEED_FORWARD_KS, 
@@ -68,6 +77,7 @@ public class Module {
         turn.setIdleMode(IdleMode.kBrake);
 
         drive.setInverted(driveReversed);
+        turn.setInverted(true);
         
         // ----------------------------
 
@@ -83,36 +93,37 @@ public class Module {
         turnEncoder.setPositionConversionFactor((1.0 / Constants.PHYSICAL_CONSTANTS.TURN_GEAR_RATIO) * Math.PI * 2.0);
         turnEncoder.setVelocityConversionFactor(((1.0 / Constants.PHYSICAL_CONSTANTS.TURN_GEAR_RATIO) * Math.PI * 2.0) / 60.0);
 
+        driveEncoder.setPosition(0);
         turnEncoder.setPosition(getAbsoluteAngleRad());
-        
+
         // ----------------------------
 
         // ------CONFIGURE PID------
 
         drivePID = drive.getPIDController();
-        turnPID = drive.getPIDController();
+        turnPID = turn.getPIDController();
 
-        drivePID.setP(Constants.TUNED_CONSTANTS.DRIVE_PID0_P, 0);
-        drivePID.setI(Constants.TUNED_CONSTANTS.DRIVE_PID0_I, 0);
-        drivePID.setD(Constants.TUNED_CONSTANTS.DRIVE_PID0_D, 0);
+        drivePID.setP(Constants.TUNED_CONSTANTS.DRIVE_PIDF0_P, 0);
+        drivePID.setI(Constants.TUNED_CONSTANTS.DRIVE_PIDF0_I, 0);
+        drivePID.setD(Constants.TUNED_CONSTANTS.DRIVE_PIDF0_D, 0);
+        drivePID.setFF(Constants.TUNED_CONSTANTS.DRIVE_PIDF0_F, 0);
 
-        turnPID.setP(Constants.TUNED_CONSTANTS.TURN_PID0_P, 0);
-        turnPID.setI(Constants.TUNED_CONSTANTS.TURN_PID0_I, 0);
-        turnPID.setD(Constants.TUNED_CONSTANTS.TURN_PID0_D, 0);
+        turnPID.setP(Constants.TUNED_CONSTANTS.TURN_PIDF0_P, 0);
+        turnPID.setI(Constants.TUNED_CONSTANTS.TURN_PIDF0_I, 0);
+        turnPID.setD(Constants.TUNED_CONSTANTS.TURN_PIDF0_D, 0);
+        turnPID.setFF(Constants.TUNED_CONSTANTS.TURN_PIDF0_F, 0);
 
         // -------------------------
 
         lastState = new SwerveModuleState(
-            getVelocity(), 
+            0, 
             Rotation2d.fromRadians(getAngleRad())
         );
 
         drive.burnFlash();
         turn.burnFlash();
 
-        if (verbosity == VERBOSITY_LEVEL.HIGH) {
-            moduleTab = Shuffleboard.getTab("Module");
-        }
+        moduleTab = Shuffleboard.getTab("Module");
     }
 
     public void setDriveBrake(boolean brake) {
@@ -132,27 +143,34 @@ public class Module {
     }
 
     public double distToTarget(Rotation2d targetAngle) {
-        double currAngle = getAngleRad() % 2*Math.PI;
-        if (currAngle > Math.PI) {
-
-        }
-
-        double diff = targetAngle.getRadians() - currAngle;
-
-        return diff % 2*Math.PI;
+        double diff =  targetAngle.getRadians() - getAngle().getRadians();
+    
+        return diff;
     }
 
     public double getRelativeTargetAngle(Rotation2d targetAngle) {
-        return getAngleRad() + distToTarget(targetAngle);
+        double diff = distToTarget(targetAngle);
+        double diff_flipped = distToTarget(Rotation2d.fromRadians(targetAngle.getRadians() + Math.PI));
+
+        diff = Math.min(diff, diff_flipped);
+
+        return getAngleRad() + diff;
     }
 
-    public void setSwerveModuleState(SwerveModuleState state, boolean velocityControl, boolean avoidJitter) {
+    public void setSwerveModuleState(SwerveModuleState state, boolean isOpenLoop, boolean avoidJitter) {
         SwerveModuleState desiredState = SwerveModuleState.optimize(state, getAngle());
 
-        if (velocityControl) {
+        /* From FRC 900's whitepaper, we add a cosine compensator to the applied drive velocity */
+        /* To reduce the "skew" that occurs when changing direction */
+        double cosScalar = Math.cos(distToTarget(desiredState.angle));
+        cosScalar = cosScalar < 0.0 ? 0.0 : cosScalar;
+
+        double velocity = desiredState.speedMetersPerSecond * cosScalar;
+
+        if (isOpenLoop) {
             drivePID.setReference(
-                desiredState.speedMetersPerSecond, 
-                ControlType.kVelocity, 
+                velocity, 
+                ControlType.kVelocity,
                 0,
                 arbfeedforward.calculate(desiredState.speedMetersPerSecond),
                 ArbFFUnits.kVoltage
@@ -164,7 +182,7 @@ public class Module {
             );
         }
 
-        checkTurnEncoder();
+        //checkTurnEncoder();
 
         if (avoidJitter && desiredState.speedMetersPerSecond < Constants.PHYSICAL_CONSTANTS.MAX_WHEEL_SPEED_METERS * 0.01) {
             desiredState.angle = lastState.angle;
@@ -174,10 +192,6 @@ public class Module {
             getRelativeTargetAngle(desiredState.angle),
             ControlType.kPosition
         );
-
-        if (verbosity == VERBOSITY_LEVEL.HIGH) {
-            //moduleTab.add(moduleName + "[ANGLE]", getAngle());
-        }
 
         lastState = desiredState;
     }
@@ -220,8 +234,12 @@ public class Module {
         return cancoder.getAbsolutePosition().getValue();
     }
 
+    public double getAbsoluteAngleDeg() {
+        return Math.toDegrees(getAbsoluteAngleRad());
+    }
+
     public double getAbsoluteAngleRad() {
-        return Units.degreesToRadians(getAbsoluteAngle());
+        return cancoder.getAbsolutePosition().getValue() * Math.PI * 2;
     }
 
     public double getAngleDegPerSec() {
@@ -257,5 +275,9 @@ public class Module {
 
     public int getModuleNumber() {
         return cancoderId/3;
+    }
+
+    public void telemetry() {
+        
     }
 }
