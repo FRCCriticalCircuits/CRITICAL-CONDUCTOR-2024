@@ -1,19 +1,25 @@
 package frc.team9062.robot.Subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team9062.robot.Constants;
-import frc.team9062.robot.Util.RobotState.VERBOSITY_LEVEL;
+import frc.team9062.robot.Util.SystemState.VERBOSITY_LEVEL;
 
 public class SwerveSubsystem extends SubsystemBase{
     private static SwerveSubsystem instance;
@@ -23,7 +29,8 @@ public class SwerveSubsystem extends SubsystemBase{
     private SwerveDriveOdometry odometry;
     private SwerveDrivePoseEstimator poseEstimator;
     private Field2d field2d;
-    
+    private VERBOSITY_LEVEL verbosity;
+    private boolean flipAutonPath = true;
 
     public SwerveSubsystem() {
         frontleft = new Module(
@@ -33,8 +40,7 @@ public class SwerveSubsystem extends SubsystemBase{
             Constants.DEVICE_IDs.FRONT_LEFT_CANCODER_ID, 
             Constants.PHYSICAL_CONSTANTS.FRONT_LEFT_OFFSET, 
             false, 
-            true, 
-            VERBOSITY_LEVEL.COMP
+            true
         );
 
         frontright = new Module(
@@ -43,9 +49,8 @@ public class SwerveSubsystem extends SubsystemBase{
             Constants.DEVICE_IDs.FRONT_RIGHT_TURN_ID, 
             Constants.DEVICE_IDs.FRONT_RIGHT_CANCODER_ID, 
             Constants.PHYSICAL_CONSTANTS.FRONT_RIGHT_OFFSET, 
-            false, 
             true, 
-            VERBOSITY_LEVEL.COMP
+            true
         );
 
         rearleft = new Module(
@@ -55,8 +60,7 @@ public class SwerveSubsystem extends SubsystemBase{
             Constants.DEVICE_IDs.REAR_LEFT_CANCODER_ID, 
             Constants.PHYSICAL_CONSTANTS.REAR_LEFT_OFFSET, 
             false, 
-            true, 
-            VERBOSITY_LEVEL.COMP
+            true
         );
 
         rearright = new Module(
@@ -65,13 +69,13 @@ public class SwerveSubsystem extends SubsystemBase{
             Constants.DEVICE_IDs.REAR_RIGHT_TURN_ID, 
             Constants.DEVICE_IDs.REAR_RIGHT_CANCODER_ID, 
             Constants.PHYSICAL_CONSTANTS.REAR_RIGHT_OFFSET, 
-            false, 
             true, 
-            VERBOSITY_LEVEL.COMP
+            true
         );
 
         
         gyro = new AHRS(Constants.DEVICE_IDs.GYRO_PORT);
+        gyro.setAngleAdjustment(180);
 
         gyro.calibrate();
 
@@ -110,6 +114,29 @@ public class SwerveSubsystem extends SubsystemBase{
         );
 
         field2d = new Field2d();
+
+        AutoBuilder.configureHolonomic(
+            this::getPose, 
+            this::resetOdom, 
+            this::getChassisSpeeds, 
+            this::outputModuleStates, 
+            new HolonomicPathFollowerConfig(
+                new PIDConstants(5),
+                new PIDConstants(5.5),
+                Constants.PHYSICAL_CONSTANTS.MAX_WHEEL_SPEED_METERS, 
+                Constants.PHYSICAL_CONSTANTS.TRACK_RADIUS_METERS,
+                new ReplanningConfig(), 
+                Constants.LOOP_TIME_S
+            ), 
+            () -> {
+                var alliance = DriverStation.getAlliance();
+                if (alliance.isPresent()) {
+                    return alliance.get() == DriverStation.Alliance.Red;
+                }
+                return false;
+            }, 
+            this
+        );
     }
 
     public static SwerveSubsystem getInstance() {
@@ -121,7 +148,7 @@ public class SwerveSubsystem extends SubsystemBase{
     }
 
     public double getYaw() {
-        return gyro.getYaw();
+        return gyro.getAngle() * Constants.PHYSICAL_CONSTANTS.GYRO_REVERSED;
     }
 
     public Rotation2d getAngle() {
@@ -129,11 +156,11 @@ public class SwerveSubsystem extends SubsystemBase{
     }
 
     public Pose2d getPose() {
-        return poseEstimator.getEstimatedPosition();
+        return odometry.getPoseMeters();
     }
 
-    public void updatePoseEstimator() {
-        poseEstimator.update(getAngle(), getSwerveModulePositions());
+    public ChassisSpeeds getChassisSpeeds() {
+        return Constants.PHYSICAL_CONSTANTS.KINEMATICS.toChassisSpeeds(getSwerveModuleStates());
     }
 
     public SwerveModulePosition[] getSwerveModulePositions() {
@@ -158,6 +185,41 @@ public class SwerveSubsystem extends SubsystemBase{
         return states;
     }
 
+    public boolean isAutoPathFlipped() {
+        return flipAutonPath;
+    }
+    
+    public void flipAutonPath(boolean flip) {
+        flipAutonPath = flip;
+    }
+
+    public void zeroGyro() {
+        gyro.zeroYaw();
+    }
+
+    public void reset() {
+        zeroGyro();
+        frontleft.reset();
+        frontright.reset();
+        rearleft.reset();
+        rearright.reset();
+    }
+
+    public void resetOdom(Pose2d pose) {
+        odometry.resetPosition(getAngle(), getSwerveModulePositions(), pose);
+    }
+
+    public void updatePoseEstimator() {
+        poseEstimator.update(getAngle(), getSwerveModulePositions());
+    }
+
+    public void setDriveBrake(boolean brake) {
+        frontleft.setDriveBrake(brake);
+        frontright.setDriveBrake(brake);
+        rearleft.setDriveBrake(brake);
+        rearright.setDriveBrake(brake);
+    }
+
     public void stop() {
         SwerveModuleState[] states = {
             new SwerveModuleState(0, new Rotation2d(0)),
@@ -165,12 +227,23 @@ public class SwerveSubsystem extends SubsystemBase{
             new SwerveModuleState(0, new Rotation2d(0)),
             new SwerveModuleState(0, new Rotation2d(0))
         };
-
+        
         outputModuleStates(
             states, 
             true, 
             true
         );
+    }
+
+    public void outputModuleStates(ChassisSpeeds speeds) {
+        SwerveModuleState states[] = Constants.PHYSICAL_CONSTANTS.KINEMATICS.toSwerveModuleStates(speeds);
+
+        SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.PHYSICAL_CONSTANTS.MAX_WHEEL_SPEED_METERS);
+
+        frontleft.setSwerveModuleState(states[0], true, false);
+        frontright.setSwerveModuleState(states[1], true, false);
+        rearleft.setSwerveModuleState(states[2], true, false);
+        rearright.setSwerveModuleState(states[3], true, false);
     }
 
     public void outputModuleStates(SwerveModuleState[] states, boolean velocityControl, boolean antiJitter) {
@@ -185,16 +258,31 @@ public class SwerveSubsystem extends SubsystemBase{
         rearright.setSwerveModuleState(states[3], velocityControl, antiJitter);
     }
 
+    public void telemetry() {
+        SmartDashboard.putData("Field", field2d);
+
+        SmartDashboard.putNumber("POSE X", getPose().getX());
+        SmartDashboard.putNumber("POSE Y", getPose().getY());
+        SmartDashboard.putNumber("POSE THETA", getPose().getRotation().getDegrees());
+
+        if (verbosity == VERBOSITY_LEVEL.COMP) {
+
+        }
+        
+        if(verbosity == VERBOSITY_LEVEL.HIGH) {
+            frontleft.telemetry();
+            frontright.telemetry();
+            rearleft.telemetry();
+            rearright.telemetry();
+        }
+    }
+
     @Override
     public void periodic() {
+        updatePoseEstimator();
         odometry.update(getAngle(), getSwerveModulePositions());
-
         field2d.setRobotPose(getPose());
-        SmartDashboard.putData(field2d);
 
-        SmartDashboard.putNumber("ABS FL", frontleft.getAbsoluteAngle());
-        SmartDashboard.putNumber("ABS FR", frontright.getAbsoluteAngle());
-        SmartDashboard.putNumber("ABS RL", rearleft.getAbsoluteAngle());
-        SmartDashboard.putNumber("ABS RR", rearright.getAbsoluteAngle());
+        telemetry();
     }
 }
