@@ -5,21 +5,14 @@ import frc.team9062.robot.Constants;
 
 public class gamepadConfigs {
     private static gamepadConfigs instance;
-    private XboxController driver, operator;
+    private static XboxController driver;
+    private static XboxController operator;
 
     public gamepadConfigs() {
         driver = new XboxController(Constants.DEVICE_IDs.GAMEPAD_DRIVER);
         operator = new XboxController(Constants.DEVICE_IDs.GAMEPAD_OPERATOR);
     }
 
-    public XboxController getDriverController() {
-        return driver;
-    }
-
-    public XboxController getOperatorController() {
-        return operator;
-    }
- 
     public static gamepadConfigs getInstance() {
         if (instance == null) {
             instance = new gamepadConfigs();
@@ -28,11 +21,11 @@ public class gamepadConfigs {
         return instance;
     }
 
-    public class TeleopBinds {
-
+    public XboxController getDriverController() {
+        return driver;
     }
 
-    public class Triggers {
-
+    public XboxController getOperatorController() {
+        return operator;
     }
 }
