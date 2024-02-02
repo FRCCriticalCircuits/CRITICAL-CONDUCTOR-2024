@@ -47,7 +47,7 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.85,
-      "rotationDegrees": 0,
+      "rotationDegrees": 180.0,
       "rotateFast": true
     }
   ],
@@ -61,13 +61,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -45.0,
+    "rotation": 135.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "4 Piece Extensions",
   "previewStartingState": {
-    "rotation": -45.0,
+    "rotation": 135.0,
     "velocity": 0
   },
   "useDefaultConstraints": false
