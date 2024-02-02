@@ -20,6 +20,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.team9062.robot.Constants;
+import frc.team9062.robot.Util.SystemState.VERBOSITY_LEVEL;
 
 public class Module {
     String moduleName;
@@ -182,7 +183,7 @@ public class Module {
             );
         }
 
-        //checkTurnEncoder();
+        checkTurnEncoder();
 
         if (avoidJitter && desiredState.speedMetersPerSecond < Constants.PHYSICAL_CONSTANTS.MAX_WHEEL_SPEED_METERS * 0.01) {
             desiredState.angle = lastState.angle;
@@ -277,7 +278,7 @@ public class Module {
         return cancoderId/3;
     }
 
-    public void telemetry() {
+    public void telemetry(VERBOSITY_LEVEL verb) {
         
     }
 }
