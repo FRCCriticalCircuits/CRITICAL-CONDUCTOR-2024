@@ -30,6 +30,20 @@ public class Constants {
 
         // ------------------------------------------------
 
+        // ------------------------------------------------
+        // SUPERSTRUCTURE
+        // ------------------------------------------------
+        
+        public static final int ARM_ID = 15;
+
+        public static final int SHOOTER_ID = 17;
+        public static final int SHOOTER_FOLLOWER_ID = 18;
+
+        public static final int ROLLER_ID = 20;
+
+        // -------------------------------------------------
+
+
         public static Port GYRO_PORT = Port.kUSB;
 
         public static final int GAMEPAD_DRIVER = 0;
@@ -48,7 +62,7 @@ public class Constants {
         public static final double DRIVE_PIDF0_D = 0;
         public static final double DRIVE_PIDF0_F = 0;
 
-        public static final double DRIVE_FEED_FORWARD_KV = 2.3854; // todo: characterize drive
+        public static final double DRIVE_FEED_FORWARD_KV = 2.3854; // todo: re-characterize drive when top half is assembled
         public static final double DRIVE_FEED_FORWARD_KA = 0.15778;
         public static final double DRIVE_FEED_FORWARD_KS = 0.41036;
 
@@ -59,12 +73,49 @@ public class Constants {
 
         // -------------------------
 
+        // -------------------------
+        // SUPERSTRUCTURE
+        // -------------------------
+
+        public static final double ARM_PIDF0_P = 1;
+        public static final double ARM_PIDF0_I = 0;
+        public static final double ARM_PIDF0_D = 0;
+        public static final double ARM_PIDF0_F = 0.1;
+
+        public static final double ARM_PIDF1_P = 0;
+        public static final double ARM_PIDF1_I = 0;
+        public static final double ARM_PIDF1_D = 0;
+        public static final double ARM_PIDF1_F = 0;
+
+        public static final double ARM_FF0_KV = 0;
+        public static final double ARM_FF0_KS = 0;
+        public static final double ARM_FF0_KA = 0;
+        public static final double ARM_FF0_KG = 0;
+
+        public static final double INTAKE_PIDF0_P = 0;
+        public static final double INTAKE_PIDF0_I = 0;
+        public static final double INTAKE_PIDF0_D = 0;
+        public static final double INTAKE_PIDF0_F = 0;
+
+        public static final double SHOOTER_PIDF0_P = 0;
+        public static final double SHOOTER_PIDF0_I = 0;
+        public static final double SHOOTER_PIDF0_D = 0;
+        public static final double SHOOTER_PIDF0_F = 0;
+
+        public static final double SHOOTER_FF0_KV = 0;
+        public static final double SHOOTER_FF0_KS = 0;
+        public static final double SHOOTER_FF0_KA = 0;
+
+        // -------------------------
+
         public static final double THETA_PID_P = 0;
         public static final double THETA_PID_I = 0;
         public static final double THETA_PID_D = 0;
         public static final double THETA_MAX_DEG_S = Math.PI;
         public static final double THETA_MAX_DEG_S2 = Math.PI*2;
 
+        public static final double ARM_MAX_RAD = Math.PI*6;
+        public static final double ARM_MAX_RAD_2 = Math.PI*8;
     }
 
     public class PHYSICAL_CONSTANTS {
@@ -86,8 +137,10 @@ public class Constants {
         public static final double DRIVE_GEAR_RATIO = 6.75;
         public static final double TURN_GEAR_RATIO = 150.0 / 7.0;
 
+        public static final double ARM_GEAR_RATIO = 250.0;
+
         public static final double MAX_TRANSLATION_METERS = 4.3;
-        public static final double MAX_ANGULAR_SPEED_RAD = Math.PI;
+        public static final double MAX_ANGULAR_SPEED_RAD = Math.PI * 2;
         public static final double MAX_WHEEL_SPEED_METERS = 4.8; 
 
         // ---------------------
@@ -96,6 +149,8 @@ public class Constants {
 
         public static final int DRIVE_CURRENT_LIMIT = 40;
         public static final int TURN_CURRENT_LIMIT = 30;
+
+        public static final int ARM_CURRENT_LIMIT = 60;
 
         public static final double NOMINAL_VOLTAGE = 12;
 
@@ -115,6 +170,8 @@ public class Constants {
 
         // --------------------
 
+        public static final double ARM_INTAKE_POSITION = -0.08;
+        public static final double ARM_HOLD_POSITION = -1.297;
 
         public static final double GYRO_REVERSED = -1;
 
