@@ -11,20 +11,23 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.team9062.robot.Commands.TeleopArm;
 import frc.team9062.robot.Commands.TeleopDrive;
+import frc.team9062.robot.Subsystems.Arm;
 import frc.team9062.robot.Subsystems.SwerveSubsystem;
 import frc.team9062.robot.Util.SystemState.VERBOSITY_LEVEL;
 
 public class RobotContainer {
   private SwerveSubsystem swerve;
+  private Arm arm;
   public SendableChooser<VERBOSITY_LEVEL> verbosityChooser = new SendableChooser<>();
   public SendableChooser<String> autoChooser = new SendableChooser<>();
 
   public RobotContainer() {
     swerve = SwerveSubsystem.getInstance();
+    arm = Arm.getInstance();
 
     configureBindings();
 
@@ -45,6 +48,10 @@ public class RobotContainer {
 
     swerve.setDefaultCommand(
       new TeleopDrive()
+    );
+
+    arm.setDefaultCommand(
+      new TeleopArm()
     );
   }
 
