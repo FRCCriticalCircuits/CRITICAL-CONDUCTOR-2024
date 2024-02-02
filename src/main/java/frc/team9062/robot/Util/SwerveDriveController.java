@@ -92,7 +92,7 @@ public class SwerveDriveController {
 
         SwerveModuleState states[] = toSwerveModuleStates(speeds);
 
-        swerve.outputModuleStates(states, true, true);
+        swerve.outputModuleStates(states, true, false );
     }
 
     public SwerveModuleState[] toSwerveModuleStates(ChassisSpeeds speeds) {
