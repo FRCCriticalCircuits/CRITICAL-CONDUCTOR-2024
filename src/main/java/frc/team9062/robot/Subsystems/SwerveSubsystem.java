@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team9062.robot.Constants;
 import frc.team9062.robot.Util.SystemState.VERBOSITY_LEVEL;
 
-public class SwerveSubsystem extends SubsystemBase{
+public class SwerveSubsystem extends SubsystemBase {
     private static SwerveSubsystem instance;
     private Module frontleft, frontright, rearleft, rearright;
     private AHRS gyro;
@@ -76,8 +76,6 @@ public class SwerveSubsystem extends SubsystemBase{
         
         gyro = new AHRS(Constants.DEVICE_IDs.GYRO_PORT);
         gyro.setAngleAdjustment(180);
-
-        gyro.calibrate();
 
         new Thread(
             () -> {
@@ -265,15 +263,18 @@ public class SwerveSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("POSE Y", getPose().getY());
         SmartDashboard.putNumber("POSE THETA", getPose().getRotation().getDegrees());
 
-        if (verbosity == VERBOSITY_LEVEL.COMP) {
-
+        if (verbosity == VERBOSITY_LEVEL.LOW) {
+            frontleft.telemetry(VERBOSITY_LEVEL.LOW);
+            frontright.telemetry(VERBOSITY_LEVEL.LOW);
+            rearleft.telemetry(VERBOSITY_LEVEL.LOW);
+            rearright.telemetry(VERBOSITY_LEVEL.LOW);
         }
         
         if(verbosity == VERBOSITY_LEVEL.HIGH) {
-            frontleft.telemetry();
-            frontright.telemetry();
-            rearleft.telemetry();
-            rearright.telemetry();
+            frontleft.telemetry(VERBOSITY_LEVEL.HIGH);
+            frontright.telemetry(VERBOSITY_LEVEL.HIGH);
+            rearleft.telemetry(VERBOSITY_LEVEL.HIGH);
+            rearright.telemetry(VERBOSITY_LEVEL.HIGH);
         }
     }
 
