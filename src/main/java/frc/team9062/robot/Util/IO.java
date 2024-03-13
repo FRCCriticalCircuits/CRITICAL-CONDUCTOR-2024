@@ -93,6 +93,14 @@ public class IO {
         return operator.getRightY();
     }
 
+    public boolean getOperatorLeftBumper() {
+        return operator.getLeftBumper();
+    }
+
+    public boolean getOperatorRightBumper() {
+        return operator.getRightBumper();
+    }
+
     public double getOperatorLeftTrigger() {
         return operator.getLeftTriggerAxis();
     }
@@ -113,8 +121,16 @@ public class IO {
         return operator.getXButton();
     }
 
+    public boolean getOperatorXButton_() {
+        return operator.getXButtonReleased();
+    }
+
     public boolean getOperatorYButton() {
         return operator.getYButton();
+    }
+
+    public boolean getOperatorYButton_() {
+        return operator.getYButtonReleased();
     }
 
     public boolean getOperatorAButton() {
@@ -123,6 +139,10 @@ public class IO {
 
     public boolean getOperatorBButton() {
         return operator.getBButton();
+    }
+
+    public boolean getOperatorBButton_() {
+        return operator.getBButtonReleased();
     }
 
     public int getOperatorPOV() {
