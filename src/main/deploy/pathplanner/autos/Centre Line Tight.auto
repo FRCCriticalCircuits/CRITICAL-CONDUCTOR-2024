@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.2,
-      "y": 5.55
+      "x": 0.63,
+      "y": 6.6
     },
-    "rotation": 180.0
+    "rotation": -120.0
   },
   "command": {
     "type": "sequential",
@@ -20,37 +20,37 @@
         {
           "type": "path",
           "data": {
-            "pathName": "4 Piece Inside - 1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Score1"
+            "pathName": "Centre Line Tight - 1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "4 Piece Inside - 2"
+            "pathName": "Centre Line Tight - 2"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Score2"
+            "name": "Shoot Far"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "4 Piece Inside - 3"
+            "pathName": "Centre Line Tight - 3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Centre Line Tight - 4"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Score3"
+            "name": "Shoot Far"
           }
         }
       ]

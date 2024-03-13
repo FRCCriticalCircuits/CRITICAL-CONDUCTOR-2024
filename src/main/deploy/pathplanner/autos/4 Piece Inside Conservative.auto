@@ -20,37 +20,55 @@
         {
           "type": "path",
           "data": {
-            "pathName": "4 Piece Inside - 1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Score1"
+            "pathName": "4 Piece Inside Consevative - 1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "4 Piece Inside - 2"
+            "pathName": "4 Piece Inside Consevative - 2"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Score2"
+            "name": "ScoreSubwooferF"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "4 Piece Inside - 3"
+            "pathName": "4 Piece Inside Consevative - 3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4 Piece Inside Consevative - 4"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Score3"
+            "name": "ScoreSubwooferF"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4 Piece Inside Consevative - 5"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4 Piece Inside Consevative - 6"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ScoreSubwooferF"
           }
         }
       ]

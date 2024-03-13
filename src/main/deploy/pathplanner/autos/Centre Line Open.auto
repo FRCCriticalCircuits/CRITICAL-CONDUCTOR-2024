@@ -1,0 +1,43 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.63,
+      "y": 4.49
+    },
+    "rotation": -60.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Centre Line Open - 1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Centre Line Open - 2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Centre Line Open - 3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Centre Line Open - 4"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
