@@ -3,6 +3,9 @@ package frc.team9062.robot.Util.CriticalLED;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
+import edu.wpi.first.wpilibj.util.Color;
+import frc.team9062.robot.Util.CriticalLED.Commands.staticColor;
+
 public class LEDManager {
     private CriticalLED led;
     private LEDCommandBase activeCommand = null;
@@ -52,7 +55,9 @@ public class LEDManager {
         if(activeCommand != null) {
             if(init) {
                 runActiveCommand();
-            }else {
+            } else if(activeCommand.isFinished()) {
+                setActiveCommand(new staticColor(led, Color.kGreen));
+            } else {
                 activeCommand.initialize();
                 init = true;
             }
