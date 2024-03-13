@@ -10,7 +10,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import frc.team9062.robot.Constants;
-import frc.team9062.robot.Subsystems.SwerveSubsystem;
+import frc.team9062.robot.Subsystems.Drive.SwerveSubsystem;
 
 public class SwerveDriveController {
     private SwerveSubsystem swerve;
@@ -23,9 +23,9 @@ public class SwerveDriveController {
         this.enableSlewRateLimiters = enableSlewRateLimiters;
         
         if (enableSlewRateLimiters) {
-            xLimiter = new SlewRateLimiter(8);
-            yLimiter = new SlewRateLimiter(8);
-            thetaLimiter = new SlewRateLimiter(8);
+            xLimiter = new SlewRateLimiter(10);
+            yLimiter = new SlewRateLimiter(10);
+            thetaLimiter = new SlewRateLimiter(10);
         }
 
         thetaController = new ProfiledPIDController(
@@ -92,7 +92,7 @@ public class SwerveDriveController {
 
         SwerveModuleState states[] = toSwerveModuleStates(speeds);
 
-        swerve.outputModuleStates(states, true, false );
+        swerve.outputModuleStates(states, true, false);
     }
 
     public SwerveModuleState[] toSwerveModuleStates(ChassisSpeeds speeds) {
@@ -100,7 +100,7 @@ public class SwerveDriveController {
     }
 
     public void resetThetaController() {
-        thetaController.reset(swerve.getYaw());
+        thetaController.reset(swerve.getPose().getRotation().getDegrees());
     }
 
     /**
@@ -135,7 +135,7 @@ public class SwerveDriveController {
     }
 
     public double[] applyLimiters(double[] values) {
-        double inputs[] = new double[3];
+        double inputs[] = new double[values.length];
         
         inputs[0] = xLimiter.calculate(values[0]);
         inputs[1] = yLimiter.calculate(values[1]);
