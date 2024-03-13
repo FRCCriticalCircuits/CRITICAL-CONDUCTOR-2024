@@ -1,4 +1,4 @@
-package frc.team9062.robot.Subsystems;
+package frc.team9062.robot.Subsystems.Drive;
 
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -279,6 +279,15 @@ public class Module {
     }
 
     public void telemetry(VERBOSITY_LEVEL verb) {
-        
+        switch (verb) {
+            case HIGH:
+                
+            case LOW:
+
+            case COMP:
+
+            default:
+                break;
+        }
     }
 }

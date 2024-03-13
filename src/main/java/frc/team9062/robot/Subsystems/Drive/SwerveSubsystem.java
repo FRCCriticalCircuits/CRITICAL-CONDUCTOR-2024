@@ -1,4 +1,4 @@
-package frc.team9062.robot.Subsystems;
+package frc.team9062.robot.Subsystems.Drive;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -6,6 +6,7 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -15,17 +16,19 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team9062.robot.Constants;
+import frc.team9062.robot.Util.CriticalSubsystem;
 import frc.team9062.robot.Util.SystemState.VERBOSITY_LEVEL;
+import frc.team9062.robot.Util.lib.LimelightHelpers;
 
-public class SwerveSubsystem extends SubsystemBase {
+public class SwerveSubsystem extends CriticalSubsystem {
     private static SwerveSubsystem instance;
     private Module frontleft, frontright, rearleft, rearright;
     private AHRS gyro;
-    private Pose2d pose = new Pose2d();
+    private Pose2d pose = new Pose2d(1.2, 5.55, Rotation2d.fromDegrees(0));
     private SwerveDriveOdometry odometry;
     private SwerveDrivePoseEstimator poseEstimator;
     private Field2d field2d;
@@ -75,7 +78,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
         
         gyro = new AHRS(Constants.DEVICE_IDs.GYRO_PORT);
-        gyro.setAngleAdjustment(180);
+        gyro.setAngleAdjustment(0);
 
         new Thread(
             () -> {
@@ -119,7 +122,7 @@ public class SwerveSubsystem extends SubsystemBase {
             this::getChassisSpeeds, 
             this::outputModuleStates, 
             new HolonomicPathFollowerConfig(
-                new PIDConstants(5),
+                new PIDConstants(7),
                 new PIDConstants(5.5),
                 Constants.PHYSICAL_CONSTANTS.MAX_WHEEL_SPEED_METERS, 
                 Constants.PHYSICAL_CONSTANTS.TRACK_RADIUS_METERS,
@@ -155,6 +158,10 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public Pose2d getPose() {
         return odometry.getPoseMeters();
+    }
+
+    public Pose2d getPoseEstimate() {
+        return poseEstimator.getEstimatedPosition();
     }
 
     public ChassisSpeeds getChassisSpeeds() {
@@ -209,6 +216,16 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public void updatePoseEstimator() {
         poseEstimator.update(getAngle(), getSwerveModulePositions());
+    }
+
+    public void updatePoseEstimatorWithVision() {
+        poseEstimator.update(getAngle(), getSwerveModulePositions());
+
+        poseEstimator.addVisionMeasurement(
+            LimelightHelpers.getBotPose2d("limelight"), 
+            Timer.getFPGATimestamp(), 
+            VecBuilder.fill(0.4, 0.4, 0.3)
+        );
     }
 
     public void setDriveBrake(boolean brake) {
@@ -281,6 +298,7 @@ public class SwerveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         updatePoseEstimator();
+        //updatePoseEstimatorWithVision();
         odometry.update(getAngle(), getSwerveModulePositions());
         field2d.setRobotPose(getPose());
 
