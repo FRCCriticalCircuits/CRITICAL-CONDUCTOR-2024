@@ -1,0 +1,87 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.381297928964374,
+        "y": 6.828842280224811
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.381297928964374,
+        "y": 6.828842280224811
+      },
+      "isLocked": false,
+      "linkedName": "4 Piece Inside - Link 2"
+    },
+    {
+      "anchor": {
+        "x": 2.484097705225823,
+        "y": 4.244162191365528
+      },
+      "prevControl": {
+        "x": 0.9840977052258228,
+        "y": 4.244162191365528
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Intake",
+      "waypointRelativePos": 0.55,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Intake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Intake Stop",
+      "waypointRelativePos": 0.65,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StopIntake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 2.5,
+    "maxAcceleration": 1.2,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 150.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "4 Piece Inside",
+  "previewStartingState": {
+    "rotation": -156.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}

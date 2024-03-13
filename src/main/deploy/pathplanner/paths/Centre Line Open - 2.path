@@ -1,0 +1,68 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.917800164759543,
+        "y": 2.32033780704413
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 7.005851041447065,
+        "y": 2.075981775914281
+      },
+      "isLocked": false,
+      "linkedName": "Centre Line Open - Link 1"
+    },
+    {
+      "anchor": {
+        "x": 5.4799768991309,
+        "y": 1.9825671136136553
+      },
+      "prevControl": {
+        "x": 5.945560511872365,
+        "y": 1.8907815990945047
+      },
+      "nextControl": {
+        "x": 5.014393286389435,
+        "y": 2.0743526281328055
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.9673516198552976,
+        "y": 2.76
+      },
+      "prevControl": {
+        "x": 4.857802120819545,
+        "y": 2.2035847725551347
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Centre Line Open - Link 2"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 1.8,
+    "maxAcceleration": 1.6,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -38.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Centre Line Open",
+  "previewStartingState": {
+    "rotation": -165.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}
