@@ -1,6 +1,7 @@
 package frc.team9062.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.SerialPort.Port;
@@ -36,10 +37,10 @@ public class Constants {
         
         public static final int ARM_ID = 15;
 
-        public static final int SHOOTER_ID = 17;
-        public static final int SHOOTER_FOLLOWER_ID = 18;
+        public static final int SHOOTER_ID = 20;
+        public static final int SHOOTER_FOLLOWER_ID = 21;
 
-        public static final int ROLLER_ID = 20;
+        public static final int ROLLER_ID = 17;
 
         // -------------------------------------------------
 
@@ -57,14 +58,14 @@ public class Constants {
         // DRIVEBASE
         // -------------------------
 
-        public static final double DRIVE_PIDF0_P = 4.497E-06;
+        public static final double DRIVE_PIDF0_P = 0.00025596; //4.497E-06;
         public static final double DRIVE_PIDF0_I = 0; 
         public static final double DRIVE_PIDF0_D = 0;
         public static final double DRIVE_PIDF0_F = 0;
 
-        public static final double DRIVE_FEED_FORWARD_KV = 2.3854; // todo: re-characterize drive when top half is assembled
-        public static final double DRIVE_FEED_FORWARD_KA = 0.15778;
-        public static final double DRIVE_FEED_FORWARD_KS = 0.41036;
+        public static final double DRIVE_FEED_FORWARD_KV = 2.2757; //2.3854; // todo: re-characterize drive when top half is assembled
+        public static final double DRIVE_FEED_FORWARD_KA = 0.39783; //0.15778;
+        public static final double DRIVE_FEED_FORWARD_KS = 0.35123; //0.41036;
 
         public static final double TURN_PIDF0_P = 0.292;
         public static final double TURN_PIDF0_I = 0;
@@ -77,45 +78,54 @@ public class Constants {
         // SUPERSTRUCTURE
         // -------------------------
 
-        public static final double ARM_PIDF0_P = 1;
+        public static final double ARM_PIDF0_P = 5.7799; //5.5363;
         public static final double ARM_PIDF0_I = 0;
-        public static final double ARM_PIDF0_D = 0;
-        public static final double ARM_PIDF0_F = 0.1;
+        public static final double ARM_PIDF0_D = 0.78755; //0.10014;
+        public static final double ARM_PIDF0_F = 0;
 
-        public static final double ARM_PIDF1_P = 0;
+        public static final double ARM_PIDF1_P = 0.00032952;
         public static final double ARM_PIDF1_I = 0;
         public static final double ARM_PIDF1_D = 0;
         public static final double ARM_PIDF1_F = 0;
 
-        public static final double ARM_FF0_KV = 0;
-        public static final double ARM_FF0_KS = 0;
-        public static final double ARM_FF0_KA = 0;
-        public static final double ARM_FF0_KG = 0;
+        public static final double ARM_FF0_KV = 3.4538;
+        public static final double ARM_FF0_KS = 1.0671;
+        public static final double ARM_FF0_KA = 0.50024;
+        public static final double ARM_FF0_KG = 0.21272;
 
-        public static final double INTAKE_PIDF0_P = 0;
+        public static final double INTAKE_PIDF0_P = 0.00076003;
         public static final double INTAKE_PIDF0_I = 0;
         public static final double INTAKE_PIDF0_D = 0;
         public static final double INTAKE_PIDF0_F = 0;
 
-        public static final double SHOOTER_PIDF0_P = 0;
+        public static final double INTAKE_PIDF1_P = 5.7351;
+        public static final double INTAKE_PIDF1_I = 0;
+        public static final double INTAKE_PIDF1_D = 0.29819;
+        public static final double INTAKE_PIDF1_F = 0;
+
+        public static final double INTAKE_FF0_KV = 4.19895;
+        public static final double INTAKE_FF0_KS = 0.77761;
+        public static final double INTAKE_FF0_KA = 2.03662;
+
+        public static final double SHOOTER_PIDF0_P = 0.007518;
         public static final double SHOOTER_PIDF0_I = 0;
         public static final double SHOOTER_PIDF0_D = 0;
         public static final double SHOOTER_PIDF0_F = 0;
 
-        public static final double SHOOTER_FF0_KV = 0;
-        public static final double SHOOTER_FF0_KS = 0;
-        public static final double SHOOTER_FF0_KA = 0;
+        public static final double SHOOTER_FF0_KV = 0.07844;
+        public static final double SHOOTER_FF0_KS = 0.18315;
+        public static final double SHOOTER_FF0_KA = 0.064626;
 
         // -------------------------
 
-        public static final double THETA_PID_P = 0;
+        public static final double THETA_PID_P = 0.1;
         public static final double THETA_PID_I = 0;
         public static final double THETA_PID_D = 0;
-        public static final double THETA_MAX_DEG_S = Math.PI;
-        public static final double THETA_MAX_DEG_S2 = Math.PI*2;
+        public static final double THETA_MAX_DEG_S = 180;
+        public static final double THETA_MAX_DEG_S2 = 360;
 
-        public static final double ARM_MAX_RAD = Math.PI*6;
-        public static final double ARM_MAX_RAD_2 = Math.PI*8;
+        public static final double ARM_MAX_RAD = Math.PI*2;
+        public static final double ARM_MAX_RAD_2 = Math.PI*4;
     }
 
     public class PHYSICAL_CONSTANTS {
@@ -134,14 +144,66 @@ public class Constants {
         public static final double DRIVE_WHEEL_DIAMETER_INCHES = 3.963;
         public static final double DRIVE_WHEEL_DIAMETER_METERS = Units.inchesToMeters(DRIVE_WHEEL_DIAMETER_INCHES);
 
+        public static final double SHOOTER_WHEEL_DIAMETER_INCHES = 4;
+        public static final double INTAKE_WHEEL_DIAMETER_INCHES = 1;
+
+        public static final double SHOOTER_WHEEL_DIAMETER_FEET = SHOOTER_WHEEL_DIAMETER_INCHES / 12.0;
+        public static final double INTAKE_WHEEL_DIAMETER_FEET = INTAKE_WHEEL_DIAMETER_INCHES / 12.0;
+
         public static final double DRIVE_GEAR_RATIO = 6.75;
         public static final double TURN_GEAR_RATIO = 150.0 / 7.0;
 
-        public static final double ARM_GEAR_RATIO = 250.0;
+        public static final double ARM_GEAR_RATIO = 253.333333;
 
-        public static final double MAX_TRANSLATION_METERS = 4.3;
+        public static final double SHOOTER_GEAR_RATIO = 2.0;
+        public static final double INTAKE_GEAR_RATIO = 9.33321;
+
+        public static final double MAX_TRANSLATION_METERS = 4.8;
         public static final double MAX_ANGULAR_SPEED_RAD = Math.PI * 2;
-        public static final double MAX_WHEEL_SPEED_METERS = 4.8; 
+        public static final double MAX_WHEEL_SPEED_METERS = 5.1; 
+
+        public static final Translation2d SPEAKER_POSITION = new Translation2d(0, 5.55);
+        public static final Translation2d SHOT_TARGET_SPEAKER_POS = new Translation2d(0, 5.55);
+        public static final double SPEAKER_HEIGHT_INCHES = 80.7505;
+        public static final double SPEAKER_HEIGHT_METERS = Units.inchesToMeters(SPEAKER_HEIGHT_INCHES); 
+        /* ARM PIVOT OF ROTATION */
+        public static final double ARM_HEIGHT_INCHES = 15.5;
+        public static final double ARM_HEIGHT_METERS = Units.inchesToMeters(ARM_HEIGHT_INCHES);
+        public static final double ARM_LENGTH_INCHES = 21.5;
+        public static final double ARM_LENGTH_METERS = Units.inchesToMeters(ARM_LENGTH_INCHES);
+
+        public static final double ARM_SETPOINT_THRESHOLD = 0.01;
+        public static final double ARM_ACCEL_SETPOINT_THRESHOLD = 0.0001;
+
+        public static final double SHOOTER_SETPOINT_THRESHOLD = 20;
+        public static final double SHOOTER_ACCEL_SETPOINT_THRESHOLD = 0.001;
+
+        public static final double INTAKE_SETPOINT_THRESHOLD = 0.02;
+        public static final double INTAKE_ACCEL_SETPOINT_THRESHOLD = 0.0004; 
+
+        public static final double FIELD_LENGTH_METERS = Units.inchesToMeters(651.223);
+
+        public static final Translation3d SPEAKER_TOP_RIGHT =
+            new Translation3d(
+                Units.inchesToMeters(18.055),
+                Units.inchesToMeters(238.815),
+                Units.inchesToMeters(83.091));
+
+        public static final Translation3d SPEAKER_TOP_LEFT =
+            new Translation3d(
+                Units.inchesToMeters(18.055),
+                Units.inchesToMeters(197.765),
+                Units.inchesToMeters(83.091));
+
+        public static final Translation3d SPEAKER_BUTTOM_RIGHT =
+            new Translation3d(0.0, Units.inchesToMeters(238.815), Units.inchesToMeters(78.324));
+        public static final Translation3d SPEAKER_BUTTOM_LEFT =
+            new Translation3d(0.0, Units.inchesToMeters(197.765), Units.inchesToMeters(78.324));
+
+        /** Center of the speaker opening (blue alliance) */
+        public static final Translation3d CENTRE_SPEAKER_OPENING =
+            SPEAKER_BUTTOM_LEFT.interpolate(SPEAKER_TOP_RIGHT, 0.5);
+
 
         // ---------------------
         // MOTORS
@@ -152,10 +214,13 @@ public class Constants {
 
         public static final int ARM_CURRENT_LIMIT = 60;
 
+        public static final int INTAKE_CURRENT_LIMIT = 20;
+        public static final int SHOOTER_CURRENT_LIMIT = 60;
+
         public static final double NOMINAL_VOLTAGE = 12;
 
         public static final double DRIVE_LOOP_RAMP_RATE = 0.2;
-        public static final double TURN_LOOP_RAMP_RATE = 0.2;
+        public static final double TURN_LOOP_RAMP_RATE = 0.1;
 
         // --------------------
 
@@ -163,15 +228,19 @@ public class Constants {
         // ENCODER OFFSETS
         // --------------------
 
-        public static final double FRONT_LEFT_OFFSET = -0.4318;
+        public static final double FRONT_LEFT_OFFSET = -0.425;
         public static final double FRONT_RIGHT_OFFSET = -0.2419;
         public static final double REAR_LEFT_OFFSET = 0.1791;
         public static final double REAR_RIGHT_OFFSET = 0.2607;
-
+        
+        public static final double ARM_OFFSET = 1.89;
+        
         // --------------------
 
-        public static final double ARM_INTAKE_POSITION = -0.08;
-        public static final double ARM_HOLD_POSITION = -1.297;
+        public static final double ARM_INTAKE_POSITION = -0.115;
+        public static final double ARM_HOLD_POSITION_HIGH = 1;
+        public static final double ARM_HOLD_POSITION_LOw = 0.161;
+        public static final double ARM_AMP_POSITION = 1.49;
 
         public static final double GYRO_REVERSED = -1;
 
@@ -180,4 +249,6 @@ public class Constants {
 
     public static final double LOOP_TIME_S = 0.02;
     public static final int LOOP_TIME_MS = 20;
+
+    public static final double INTAKE_DEBOUNCE_TIME = 0.3;
 }
