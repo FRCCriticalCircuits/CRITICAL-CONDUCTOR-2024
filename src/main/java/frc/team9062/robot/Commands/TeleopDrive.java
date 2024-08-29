@@ -49,15 +49,18 @@ public class TeleopDrive extends Command{
                 true
             );
         } else {
+            double heading = SystemState.getInstance().getShootingData(swerve::getPose).heading.getDegrees();
+
             if(!withHeading) {
-                controller.resetThetaController();
+                //controller.resetThetaController();
+                controller.setThetaController(heading);
                 withHeading = true;
             }
 
             controller.driveWithHeading(
                 deadband.applydeadband(() -> io.getDriverLeftY()), 
                 deadband.applydeadband(() -> io.getDriverLeftX()),
-                SystemState.getInstance().getShootingData(swerve::getPose).heading.getDegrees()
+                heading
             );
         }
     }
