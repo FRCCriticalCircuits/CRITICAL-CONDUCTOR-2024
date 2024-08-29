@@ -9,9 +9,12 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team9062.robot.Constants;
+import frc.team9062.robot.Subsystems.Drive.SwerveSubsystem;
 
-public class SystemState {
+public class SystemState extends SubsystemBase {
     private static SystemState instance;
     private VERBOSITY_LEVEL robot_verbosity;
 
@@ -44,25 +47,15 @@ public class SystemState {
             target = Constants.PHYSICAL_CONSTANTS.CENTRE_SPEAKER_OPENING;
         }
 
-        Transform2d targetTransform = new Transform2d(
-            target.toTranslation2d(), 
-            new Rotation2d()
-        );
+        Rotation2d angle;
 
-        Pose2d position = new Pose2d(
-            new Translation2d(-pose.get().getTranslation().getX(), -pose.get().getTranslation().getY()).rotateBy(pose.get().getRotation()), 
-            pose.get().getRotation().rotateBy(pose.get().getRotation())
-        );
-
-        Pose2d positionFix = new Pose2d(
-            new Translation2d(-pose.get().getX(), -pose.get().getY()), Rotation2d.fromDegrees(180)
-        );
-
-        Translation2d positionFixTransform = positionFix.transformBy(targetTransform).getTranslation();
+        Translation2d distances = pose.get().getTranslation().minus(target.toTranslation2d());
+        
+        angle = Rotation2d.fromDegrees(180 + distances.getAngle().getDegrees());
 
         return new AimData(
-            position.getTranslation().getAngle(), 
-            positionFixTransform.getNorm()
+            angle, 
+            distances.getNorm()
         );
     }
 
@@ -81,5 +74,10 @@ public class SystemState {
         CLIMBING,
         SHOOTING,
         SHOOT_WHILE_DRIVE
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("Target Distance", getShootingData(SwerveSubsystem.getInstance()::getPoseEstimate).distance);
     }
 }
