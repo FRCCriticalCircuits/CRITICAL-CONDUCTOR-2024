@@ -1,0 +1,55 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.2,
+      "y": 5.55
+    },
+    "rotation": 180.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "ScoreSubwoofer"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "3 Piece Inside Plus 1 - Path 1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "3 Piece Inside Plus 1 - Path 2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "3 Piece Inside Plus 1 - Path 3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "3 Piece Inside Plus 1 - Path 4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Close"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
