@@ -33,6 +33,7 @@ import frc.team9062.robot.Subsystems.Drive.SwerveSubsystem;
 import frc.team9062.robot.Subsystems.LEDSubsystem.LED_STATE;
 import frc.team9062.robot.Subsystems.Rollers.INTAKE_STATE;
 import frc.team9062.robot.Subsystems.Arm.ARM_STATE;
+import frc.team9062.robot.Util.SystemState;
 import frc.team9062.robot.Util.gamepadConfigs;
 import frc.team9062.robot.Util.SystemState.VERBOSITY_LEVEL;
 
@@ -44,13 +45,14 @@ public class RobotContainer {
   private SendableChooser<VERBOSITY_LEVEL> verbosityChooser = new SendableChooser<>();
   private SendableChooser<String> autoChooser = new SendableChooser<>();
   private CommandXboxController operator;
-  //private CommandXboxController driver;
+  private CommandXboxController driver;
 
   public RobotContainer() {
     arm = Arm.getInstance();
     rollers = Rollers.getInstance();
     led = LEDSubsystem.getInstance();
     swerve = SwerveSubsystem.getInstance();
+    SystemState.getInstance();
 
     NamedCommands.registerCommand("Intake", new Intake());
     NamedCommands.registerCommand(
@@ -59,8 +61,8 @@ public class RobotContainer {
         new WaitCommand(1.2),
         new SequentialCommandGroup(
           new InstantCommand(() -> rollers.setIntakeState(INTAKE_STATE.IDLE)),
-          new InstantCommand(() -> arm.setCustomSetpoint(0.46), arm),
-          //new InstantCommand(() -> arm.setArmState(ARM_STATE.AIM), arm),
+          //new InstantCommand(() -> arm.setCustomSetpoint(0.46), arm),
+          new InstantCommand(() -> arm.setArmState(ARM_STATE.AIM), arm),
           new ParallelCommandGroup(
             new RepeatCommand(
               new InstantCommand(() -> rollers.setShooterVelocity(60))
@@ -79,8 +81,8 @@ public class RobotContainer {
         new WaitCommand(1.2),
         new SequentialCommandGroup(
           new InstantCommand(() -> rollers.setIntakeState(INTAKE_STATE.IDLE)),
-          new InstantCommand(() -> arm.setCustomSetpoint(0.465), arm),
-          //new InstantCommand(() -> arm.setArmState(ARM_STATE.AIM), arm),
+          //new InstantCommand(() -> arm.setCustomSetpoint(0.465), arm),
+          new InstantCommand(() -> arm.setArmState(ARM_STATE.AIM), arm),
           new ParallelCommandGroup(
             new RepeatCommand(
               new InstantCommand(() -> rollers.setShooterVelocity(65))
@@ -99,14 +101,14 @@ public class RobotContainer {
         new WaitCommand(1.5),
         new SequentialCommandGroup(
           new InstantCommand(() -> rollers.setIntakeState(INTAKE_STATE.IDLE)),
-          new InstantCommand(() -> arm.setCustomSetpoint(0.455), arm),
-          //new InstantCommand(() -> arm.setArmState(ARM_STATE.AIM), arm),
+          //new InstantCommand(() -> arm.setCustomSetpoint(0.455), arm),
+          new InstantCommand(() -> arm.setArmState(ARM_STATE.AIM), arm),
           new ParallelCommandGroup(
             new RepeatCommand(
               new InstantCommand(() -> rollers.setShooterVelocity(65))
             ),
             new SequentialCommandGroup(
-              new WaitCommand(1),
+              new WaitCommand(1.2),
               new feed()
             )
           )
@@ -116,15 +118,15 @@ public class RobotContainer {
     NamedCommands.registerCommand(
       "ScoreSubwoofer", 
       new ParallelDeadlineGroup(
-        new WaitCommand(1.25),
+        new WaitCommand(1.00),
         new SequentialCommandGroup(
           new InstantCommand(() -> arm.setArmState(ARM_STATE.LOW), arm),
           new ParallelCommandGroup(
             new RepeatCommand(
-              new InstantCommand(() -> rollers.setShooterVelocity(40))
+              new InstantCommand(() -> rollers.setShooterVelocity(50))
             ),
             new SequentialCommandGroup(
-              new WaitCommand(0.8),
+              new WaitCommand(0.6),
               new feed()
             )
           )
@@ -135,15 +137,15 @@ public class RobotContainer {
     NamedCommands.registerCommand(
       "ScoreSubwooferF", 
       new ParallelDeadlineGroup(
-        new WaitCommand(0.5),
+        new WaitCommand(0.4),
         new SequentialCommandGroup(
           new InstantCommand(() -> arm.setArmState(ARM_STATE.LOW), arm),
           new ParallelCommandGroup(
             new RepeatCommand(
-              new InstantCommand(() -> rollers.setShooterVelocity(40))
+              new InstantCommand(() -> rollers.setShooterVelocity(45))
             ),
             new SequentialCommandGroup(
-              new WaitCommand(0.1),
+              //new WaitCommand(0.15),
               new feed()
             )
           )
@@ -173,7 +175,7 @@ public class RobotContainer {
     NamedCommands.registerCommand(
       "Shoot Close",
       new ParallelCommandGroup(
-        new WaitCommand(1),
+        new WaitCommand(1.2),
         new SequentialCommandGroup(
           new InstantCommand(() -> arm.setArmState(ARM_STATE.AIM), arm),
           new ParallelCommandGroup(
@@ -181,13 +183,46 @@ public class RobotContainer {
               new InstantCommand(() -> rollers.setShooterVelocity(60))
             ),
             new SequentialCommandGroup(
-              new WaitCommand(0.6),
+              new WaitCommand(0.8),
               new feed()
             )
           )
         )
       )
     );
+
+    NamedCommands.registerCommand(
+      "Shoot CloseF",
+      new ParallelCommandGroup(
+        new WaitCommand(0.5),
+        new SequentialCommandGroup(
+          new InstantCommand(() -> arm.setArmState(ARM_STATE.AIM), arm),
+          new ParallelCommandGroup(
+            new RepeatCommand(
+              new InstantCommand(() -> rollers.setShooterVelocity(60))
+            ),
+            new SequentialCommandGroup(
+              new WaitCommand(0.3),
+              new feed()
+            )
+          )
+        )
+      )
+    );
+
+    NamedCommands.registerCommand(
+      "aim", 
+      new RepeatCommand(
+        new SequentialCommandGroup(
+          new InstantCommand(() -> arm.setArmState(ARM_STATE.AIM), arm),
+          new InstantCommand(() -> rollers.setShooterVelocity(60))
+        )
+      ));
+
+      NamedCommands.registerCommand(
+      "feed", 
+        new feed()
+      );
 
     NamedCommands.registerCommand(
       "SpinUp80",
@@ -198,7 +233,9 @@ public class RobotContainer {
       )
     );
 
-    //driver = new CommandXboxController(Constants.DEVICE_IDs.GAMEPAD_DRIVER);
+  
+
+    driver = new CommandXboxController(Constants.DEVICE_IDs.GAMEPAD_DRIVER);
     operator = new CommandXboxController(Constants.DEVICE_IDs.GAMEPAD_OPERATOR);
 
     configureBindings();
@@ -215,6 +252,8 @@ public class RobotContainer {
     autoChooser.addOption("4 Piece Inside Conservative", "4 Piece Inside Conservative");
     autoChooser.addOption("Simple Centreline Open", "Simple Centreline Open");
     autoChooser.addOption("Simple Centreline Tight", "Simple Centreline Tight");
+    autoChooser.addOption("3 Piece Inside Plus 1", "3 Piece Inside Plus 1");
+    autoChooser.addOption("Centre Line Open", "Centre Line Open");
 
     SmartDashboard.putData("VERBOSITY", verbosityChooser);
     SmartDashboard.putData("AUTO", autoChooser);
@@ -222,14 +261,16 @@ public class RobotContainer {
     swerve.setDefaultCommand(
       new TeleopDrive()
     );
-
     
     arm.setDefaultCommand(
       new ConditionalCommand(
-        new InstantCommand(() -> {
+        new RepeatCommand(
+          new InstantCommand(() -> {
           arm.setArmState(ARM_STATE.LOW);
           led.setLED(LED_STATE.DEFAULT);
-        }, arm), 
+          }, 
+        arm)
+        ), 
         new RepeatCommand(
           new InstantCommand(() -> {
             arm.setArmVelocity(0);
@@ -237,7 +278,7 @@ public class RobotContainer {
           }, 
           arm)
         ),
-        () -> arm.getArmState() != ARM_STATE.MANUAL
+        () -> arm.getArmState() != ARM_STATE.MANUAL // || arm.getArmState() != ARM_STATE.CLIMB
       )
     );
 
@@ -257,8 +298,8 @@ public class RobotContainer {
     );
 
     
-    operator
-      .leftTrigger()
+    driver
+      .rightTrigger()
         .whileTrue(
             new RepeatCommand(
               new InstantCommand(
@@ -275,6 +316,7 @@ public class RobotContainer {
             ).andThen(
               new InstantCommand(
                 () -> {
+                  rollers.setIntakeState(INTAKE_STATE.IDLE);
                   if (rollers.isWithGamePiece()) {
                     CommandScheduler.getInstance().schedule(
                     new RumbleCommand(
@@ -288,7 +330,7 @@ public class RobotContainer {
     );
     
     /* 
-    operator
+    driver
       .leftTrigger()
         .whileTrue(
             new RepeatCommand(
@@ -302,7 +344,7 @@ public class RobotContainer {
             )
     );
     */
-
+      
     operator
       .rightTrigger()
         .whileTrue(
@@ -317,6 +359,7 @@ public class RobotContainer {
           )
     );
 
+    /* 
     operator
       .leftTrigger().and(operator.rightTrigger())
         .whileTrue(
@@ -331,17 +374,70 @@ public class RobotContainer {
             )
           )
     );
+    */
 
+    // LOW PASS
+    operator
+      .leftTrigger()
+        .whileTrue(
+          new RepeatCommand(
+            new InstantCommand(
+              () -> {
+                arm.setArmState(ARM_STATE.HIGH);
+                rollers.setShooterVelocity(50);
+                led.setLED(LED_STATE.ALIGNING);
+              }, 
+              arm, rollers
+            )
+          )
+    );
+
+    // FEED LOW LOB
+    operator
+      .leftTrigger().and(operator.rightBumper())
+        .whileTrue(
+          new RepeatCommand(
+            new InstantCommand(
+              () -> {
+                arm.setArmState(ARM_STATE.HIGH);
+                rollers.setShooterVelocity(50);
+                rollers.setIntakeState(INTAKE_STATE.FEEDING);
+                led.setLED(LED_STATE.SHOOTING);
+              }, 
+              arm, rollers
+            )
+          )
+    );
+
+    // SET HIGH LOB
     operator
       .leftBumper()
         .whileTrue(
           new RepeatCommand(
             new InstantCommand(
               () -> {
-                arm.setArmState(ARM_STATE.HIGH);
-                led.setLED(LED_STATE.DEFAULT);
+                arm.setArmState(ARM_STATE.LOW);
+                rollers.setShooterVelocity(50);
+                led.setLED(LED_STATE.ALIGNING);
               }, 
-              arm
+              arm, rollers
+            )
+          )
+    );
+
+    // FEED HUGH LOB
+    operator
+      .leftBumper().and(operator.rightBumper())
+        .whileTrue(
+          new RepeatCommand(
+            new InstantCommand(
+              () -> {
+                arm.setArmState(ARM_STATE.LOW);
+                rollers.setShooterVelocity(50);
+                rollers.setIntakeState(INTAKE_STATE.FEEDING);
+                led.setLED(LED_STATE.SHOOTING);
+              }, 
+              arm, rollers
             )
           )
     );
@@ -385,7 +481,7 @@ public class RobotContainer {
               new InstantCommand(
                 () -> {
                   arm.setArmState(ARM_STATE.LOW);
-                  rollers.setShooterVelocity(40);
+                  rollers.setShooterVelocity(50);
                   rollers.setIntakeState(INTAKE_STATE.IDLE);
                   led.setLED(LED_STATE.ALIGNING);
                 }, 
@@ -401,7 +497,7 @@ public class RobotContainer {
               new InstantCommand(
                 () -> {
                   arm.setArmState(ARM_STATE.LOW);
-                  rollers.setShooterVelocity(40);
+                  rollers.setShooterVelocity(50);
                   rollers.setIntakeState(INTAKE_STATE.FEEDING);
                   led.setLED(LED_STATE.SHOOTING);
                 }, 
@@ -417,7 +513,7 @@ public class RobotContainer {
               new InstantCommand(
                 () -> {
                   arm.setArmState(ARM_STATE.AIM);
-                  rollers.setShooterVelocity(40);
+                  rollers.setShooterVelocity(60);
                   rollers.setIntakeState(INTAKE_STATE.IDLE);
                   led.setLED(LED_STATE.ALIGNING);
                 }, 
@@ -433,7 +529,7 @@ public class RobotContainer {
               new InstantCommand(
                 () -> {
                   arm.setArmState(ARM_STATE.AIM);
-                  rollers.setShooterVelocity(40);
+                  rollers.setShooterVelocity(60);
                   rollers.setIntakeState(INTAKE_STATE.FEEDING);
                   led.setLED(LED_STATE.SHOOTING);
                 }, 
@@ -442,16 +538,37 @@ public class RobotContainer {
             )
     );
 
+    operator
+      .leftTrigger().and(operator.x())
+        .whileTrue(
+          new RepeatCommand(
+            new InstantCommand(() -> arm.setArmState(ARM_STATE.CLIMB), arm)
+          )
+    );
+
+    // SPOOL SHOOTER
+    operator
+        .a().whileTrue(
+          new RepeatCommand(
+            new InstantCommand(() -> rollers.setShooterVelocity(60))
+          )
+    );
+
   }
 
   public Command getAutonomousCommand() { 
     Pose2d pose = PathPlannerAuto.getStaringPoseFromAutoFile(autoChooser.getSelected());
 
     return new SequentialCommandGroup(
-      new InstantCommand(() -> swerve.resetOdom(pose), swerve),
+      new InstantCommand(
+        () -> {
+          swerve.resetOdom(pose); 
+          swerve.resetPoseEstimate(pose);
+        }, swerve
+      ),
       AutoBuilder.buildAuto(autoChooser.getSelected())
     );
       
-      //return autoChooser.getSelected();
+    //return autoChooser.getSelected();
   }
 }
