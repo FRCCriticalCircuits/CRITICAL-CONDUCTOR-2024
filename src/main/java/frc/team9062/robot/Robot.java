@@ -19,7 +19,7 @@ import frc.team9062.robot.Util.lib.LimelightHelpers;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-  //private LEDSubsystem led;
+  private LEDSubsystem led;
 
   private RobotContainer m_robotContainer;
   private SendableChooser<Boolean> intakeDirection = new SendableChooser<>();
@@ -32,16 +32,14 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
-   //led = LEDSubsystem.getInstance();
-
-   //LimelightHelpers.setLEDMode_ForceOff("limelight");
+    led = LEDSubsystem.getInstance(); 
 
     intakeDirection.setDefaultOption("Forward", true);
     intakeDirection.setDefaultOption("Reverse", false);
 
     SmartDashboard.putData(intakeDirection);
 
-   for (int port = 5000; port < 5707; port++) {
+   for (int port = 5800; port < 5807; port++) {
     PortForwarder.add(port, "limelight.local", port);
    }
   }
@@ -50,31 +48,31 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
 
+    LimelightHelpers.setLEDMode_ForceOff("limelight");
+
     intakeDirection.onChange(
       (direction) -> {
         Rollers.getInstance().setIntakeDirection(direction);
       }
-    );
-    
-    //LimelightHelpers.setLEDMode_ForceOff("limelight");
+    );  
   }
 
   @Override
-  public void disabledInit() {
-    //led.setLED(LED_STATE.DISABLED);
+  public void disabledInit() {}
+
+  @Override
+  public void disabledPeriodic() {
+    led.setLED(LED_STATE.DISABLED);
   }
 
   @Override
-  public void disabledPeriodic() {}
-
-  @Override
-  public void disabledExit() {
-    //led.setLED(LED_STATE.DEFAULT);
-  }
+  public void disabledExit() {}
 
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+
+    led.setLED(LED_STATE.DEFAULT);
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -94,6 +92,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    led.setLED(LED_STATE.DEFAULT);
+
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
