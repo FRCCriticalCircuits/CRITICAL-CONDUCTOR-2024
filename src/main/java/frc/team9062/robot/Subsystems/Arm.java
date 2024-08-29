@@ -28,6 +28,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team9062.robot.Constants;
 import frc.team9062.robot.Subsystems.Drive.SwerveSubsystem;
 import frc.team9062.robot.Util.CriticalSubsystem;
+import frc.team9062.robot.Util.SystemState;
+import frc.team9062.robot.Util.SystemState.ROBOT_STATE;
 
 public class Arm extends CriticalSubsystem {
     private static Arm instance;
@@ -37,7 +39,7 @@ public class Arm extends CriticalSubsystem {
     private RelativeEncoder encoder;
     private ArmFeedforward arbfeedforward;
     private TrapezoidProfile motionProfile;
-    private double timestamp, accel, custom_position, position = Constants.PHYSICAL_CONSTANTS.ARM_HOLD_POSITION_HIGH, lastvel;
+    private double accel, custom_position, position = Constants.PHYSICAL_CONSTANTS.ARM_POSITION_HIGH, lastvel;
     private ARM_STATE arm_state = ARM_STATE.MANUAL;
     private State setpoint;
 
@@ -47,9 +49,9 @@ public class Arm extends CriticalSubsystem {
         arm_map.put(ARM_STATE.INTAKE, Constants.PHYSICAL_CONSTANTS.ARM_INTAKE_POSITION);
         arm_map.put(ARM_STATE.AMP, Constants.PHYSICAL_CONSTANTS.ARM_AMP_POSITION);
         arm_map.put(ARM_STATE.LOW, Constants.PHYSICAL_CONSTANTS.ARM_HOLD_POSITION_LOw);
-        arm_map.put(ARM_STATE.HIGH, Constants.PHYSICAL_CONSTANTS.ARM_HOLD_POSITION_HIGH);
-        arm_map.put(ARM_STATE.PREPARE_HOOK, 1.0);
-        arm_map.put(ARM_STATE.HOOK, 0.0);
+        arm_map.put(ARM_STATE.HIGH, Constants.PHYSICAL_CONSTANTS.ARM_POSITION_HIGH);
+        arm_map.put(ARM_STATE.PASS, Constants.PHYSICAL_CONSTANTS.ARM_POSITION_HIGH);
+        arm_map.put(ARM_STATE.CLIMB, 1.3);
     }
 
     public Arm() {
@@ -179,7 +181,7 @@ public class Arm extends CriticalSubsystem {
             state.velocity = 0;
         }
         */
-
+        
         armPID.setReference(
             setpoint.position, 
             ControlType.kPosition,
@@ -249,13 +251,13 @@ public class Arm extends CriticalSubsystem {
 
     public void aimForTarget(Supplier<Pose2d> robotPose) {
         Translation2d robotToTarget = new Translation2d(
-            DriverStation.getAlliance().get() == Alliance.Blue ? robotPose.get().getX() - Constants.PHYSICAL_CONSTANTS.CENTRE_SPEAKER_OPENING.getX() : Constants.PHYSICAL_CONSTANTS.FIELD_LENGTH_METERS - Constants.PHYSICAL_CONSTANTS.CENTRE_SPEAKER_OPENING.getX() - robotPose.get().getX(), 
+            SystemState.getInstance().getShootingData(robotPose).distance, // DriverStation.getAlliance().get() == Alliance.Blue ? robotPose.get().getX() - Constants.PHYSICAL_CONSTANTS.CENTRE_SPEAKER_OPENING.getX() : Constants.PHYSICAL_CONSTANTS.FIELD_LENGTH_METERS - Constants.PHYSICAL_CONSTANTS.CENTRE_SPEAKER_OPENING.getX() - robotPose.get().getX()
             Constants.PHYSICAL_CONSTANTS.CENTRE_SPEAKER_OPENING.getZ() - Constants.PHYSICAL_CONSTANTS.ARM_HEIGHT_METERS
         );
 
-        double targetToShooterTheta = Math.asin((Constants.PHYSICAL_CONSTANTS.ARM_LENGTH_METERS * Math.sin(65)) / robotToTarget.getNorm());
+        double targetToShooterTheta = Math.asin((Constants.PHYSICAL_CONSTANTS.ARM_LENGTH_METERS * Math.sin(62.5)) / robotToTarget.getNorm());
 
-        double angle = Math.toRadians(65) - Math.toRadians(180 - targetToShooterTheta - (180 - robotToTarget.getAngle().getDegrees()));
+        double angle = Math.toRadians(62.5) - Math.toRadians(180 - targetToShooterTheta - (180 - robotToTarget.getAngle().getDegrees()));
 
         setArmPosition(angle);
     }
@@ -394,11 +396,17 @@ public class Arm extends CriticalSubsystem {
             case AMP -> {
                 setArmPosition(arm_map.get(arm_state));
             }
+            case PASS -> {
+                setArmPosition(arm_map.get(arm_state));
+            }
+            case CLIMB -> {
+                setArmPosition(arm_map.get(arm_state));
+            }
             case CUSTOM -> {
                 setArmPosition(custom_position);
             }
             case AIM -> {
-                aimForTarget(SwerveSubsystem.getInstance()::getPose);
+                aimForTarget(SwerveSubsystem.getInstance()::getPoseEstimate);
             }
             default -> {}
         }
@@ -410,8 +418,8 @@ public class Arm extends CriticalSubsystem {
         HIGH,
         INTAKE,
         AMP,
-        PREPARE_HOOK,
-        HOOK,
+        PASS,
+        CLIMB,
         AIM,
         CUSTOM
     }
