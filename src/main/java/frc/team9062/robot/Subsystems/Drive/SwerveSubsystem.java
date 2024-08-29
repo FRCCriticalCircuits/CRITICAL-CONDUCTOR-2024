@@ -17,10 +17,12 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team9062.robot.Constants;
 import frc.team9062.robot.Util.CriticalSubsystem;
+import frc.team9062.robot.Util.SystemState;
 import frc.team9062.robot.Util.SystemState.VERBOSITY_LEVEL;
 import frc.team9062.robot.Util.lib.LimelightHelpers;
 
@@ -28,10 +30,11 @@ public class SwerveSubsystem extends CriticalSubsystem {
     private static SwerveSubsystem instance;
     private Module frontleft, frontright, rearleft, rearright;
     private AHRS gyro;
-    private Pose2d pose = new Pose2d(1.2, 5.55, Rotation2d.fromDegrees(0));
+    private Pose2d pose = new Pose2d(1.2, 5.55, Rotation2d.fromDegrees(180));
     private SwerveDriveOdometry odometry;
     private SwerveDrivePoseEstimator poseEstimator;
     private Field2d field2d;
+    private Field2d est_field;
     private VERBOSITY_LEVEL verbosity;
     private boolean flipAutonPath = true;
 
@@ -91,14 +94,14 @@ public class SwerveSubsystem extends CriticalSubsystem {
                     rearleft.reset();
                     Thread.sleep(10);
                     rearright.reset();
-                    Thread.sleep(1000);
-                    gyro.reset();
-                    odometry.resetPosition(getAngle(), getSwerveModulePositions(), pose);
+                    //odometry.resetPosition(getAngle(), getSwerveModulePositions(), pose);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         ).start();
+
+        reset();
 
         odometry = new SwerveDriveOdometry(
             Constants.PHYSICAL_CONSTANTS.KINEMATICS,
@@ -111,10 +114,13 @@ public class SwerveSubsystem extends CriticalSubsystem {
             Constants.PHYSICAL_CONSTANTS.KINEMATICS, 
             getAngle(), 
             getSwerveModulePositions(), 
-            pose
+            DriverStation.getAlliance().get() == Alliance.Blue ? pose : new Pose2d(Constants.PHYSICAL_CONSTANTS.FIELD_LENGTH_METERS - pose.getX(), pose.getY(), Rotation2d.fromDegrees(pose.getRotation().getDegrees() + 180))
+            //VecBuilder.fill(0.01, 0.01, 0.03),
+            //VecBuilder.fill(0.02, 0.02, 0.2)
         );
 
         field2d = new Field2d();
+        est_field = new Field2d();
 
         AutoBuilder.configureHolonomic(
             this::getPose, 
@@ -122,8 +128,8 @@ public class SwerveSubsystem extends CriticalSubsystem {
             this::getChassisSpeeds, 
             this::outputModuleStates, 
             new HolonomicPathFollowerConfig(
-                new PIDConstants(7),
-                new PIDConstants(5.5),
+                new PIDConstants(2.5),
+                new PIDConstants(6),
                 Constants.PHYSICAL_CONSTANTS.MAX_WHEEL_SPEED_METERS, 
                 Constants.PHYSICAL_CONSTANTS.TRACK_RADIUS_METERS,
                 new ReplanningConfig(), 
@@ -203,7 +209,7 @@ public class SwerveSubsystem extends CriticalSubsystem {
     }
 
     public void reset() {
-        zeroGyro();
+        //zeroGyro();
         frontleft.reset();
         frontright.reset();
         rearleft.reset();
@@ -214,6 +220,10 @@ public class SwerveSubsystem extends CriticalSubsystem {
         odometry.resetPosition(getAngle(), getSwerveModulePositions(), pose);
     }
 
+    public void resetPoseEstimate(Pose2d pose) {
+        poseEstimator.resetPosition(getAngle(), getSwerveModulePositions(), pose);
+    }
+
     public void updatePoseEstimator() {
         poseEstimator.update(getAngle(), getSwerveModulePositions());
     }
@@ -221,11 +231,21 @@ public class SwerveSubsystem extends CriticalSubsystem {
     public void updatePoseEstimatorWithVision() {
         poseEstimator.update(getAngle(), getSwerveModulePositions());
 
-        poseEstimator.addVisionMeasurement(
-            LimelightHelpers.getBotPose2d("limelight"), 
-            Timer.getFPGATimestamp(), 
-            VecBuilder.fill(0.4, 0.4, 0.3)
-        );
+        /* 
+        if (SystemState.getInstance().getShootingData(() -> getPoseEstimate()).distance > 3) {
+            LimelightHelpers.setPipelineIndex("limelight", 1);
+        } else {
+            LimelightHelpers.setPipelineIndex("limelight", 0);
+        }
+        */
+
+        if (LimelightHelpers.getTV("limelight")) {
+            poseEstimator.addVisionMeasurement(
+                LimelightHelpers.getBotPose2d_wpiBlue("limelight"), //DriverStation.getAlliance().get() == Alliance.Blue ? LimelightHelpers.getBotPose2d_wpiBlue("limelight") : LimelightHelpers.getBotPose2d_wpiRed("limelight"), 
+                Timer.getFPGATimestamp(),
+                VecBuilder.fill(0.01, 0.01, 0.2)
+            );
+        }
     }
 
     public void setDriveBrake(boolean brake) {
@@ -275,6 +295,7 @@ public class SwerveSubsystem extends CriticalSubsystem {
 
     public void telemetry() {
         SmartDashboard.putData("Field", field2d);
+        SmartDashboard.putData("Estimated Pose", est_field);
 
         SmartDashboard.putNumber("POSE X", getPose().getX());
         SmartDashboard.putNumber("POSE Y", getPose().getY());
@@ -297,10 +318,11 @@ public class SwerveSubsystem extends CriticalSubsystem {
 
     @Override
     public void periodic() {
-        updatePoseEstimator();
-        //updatePoseEstimatorWithVision();
+        //updatePoseEstimator();
+        updatePoseEstimatorWithVision();
         odometry.update(getAngle(), getSwerveModulePositions());
         field2d.setRobotPose(getPose());
+        est_field.setRobotPose(getPoseEstimate());
 
         telemetry();
     }
