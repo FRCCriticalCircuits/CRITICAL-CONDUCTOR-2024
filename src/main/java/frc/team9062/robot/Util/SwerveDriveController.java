@@ -39,6 +39,8 @@ public class SwerveDriveController {
         );
 
         thetaController.enableContinuousInput(-180, 180);
+
+        thetaController.setTolerance(10);
     }
 
     public void drive(double x, double y, double theta, boolean isFieldRelative) {
@@ -97,6 +99,10 @@ public class SwerveDriveController {
 
     public SwerveModuleState[] toSwerveModuleStates(ChassisSpeeds speeds) {
         return Constants.PHYSICAL_CONSTANTS.KINEMATICS.toSwerveModuleStates(speeds);
+    }
+
+    public void setThetaController(double goal) {
+        thetaController.setGoal(goal);
     }
 
     public void resetThetaController() {
