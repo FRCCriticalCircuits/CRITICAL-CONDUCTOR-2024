@@ -27,6 +27,12 @@ public class Intake extends Command {
     }
 
     @Override
+    public void end(boolean interrupted) {
+        arm.setArmState(ARM_STATE.LOW);
+        rollers.setIntakeState(INTAKE_STATE.IDLE);
+    }
+
+    @Override
     public boolean isFinished() {
         return rollers.isWithGamePiece();
     }
