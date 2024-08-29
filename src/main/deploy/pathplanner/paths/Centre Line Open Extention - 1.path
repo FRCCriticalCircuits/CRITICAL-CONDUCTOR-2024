@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.917800164759543,
-        "y": 2.32033780704413
+        "x": 2.0288415532108353,
+        "y": 4.2
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.211513811220826,
-        "y": 2.085366889875104
+        "x": 2.3225551996721183,
+        "y": 3.965029082830974
       },
       "isLocked": false,
       "linkedName": "Centre Line Open - Link 1"

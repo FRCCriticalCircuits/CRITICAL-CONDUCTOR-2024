@@ -8,7 +8,7 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.4,
+        "x": 2.2,
         "y": 5.55
       },
       "isLocked": false,
@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 2.528154752195015,
+        "x": 2.4547263405796946,
         "y": 5.55
       },
       "prevControl": {
-        "x": 1.528154752195015,
+        "x": 1.4547263405796946,
         "y": 5.55
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "4 Piece Inside Consevative - Link 1"
+      "linkedName": "3 Piece Inside Plus 1 - Link 1"
     }
   ],
   "rotationTargets": [],
@@ -33,7 +33,7 @@
   "eventMarkers": [
     {
       "name": "Intake",
-      "waypointRelativePos": 0.5,
+      "waypointRelativePos": 0.2,
       "command": {
         "type": "sequential",
         "data": {
@@ -50,18 +50,18 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 1.4,
-    "maxAcceleration": 1.6,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.2,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 0.5,
     "rotation": 180.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "4 Piece Inside Consevative",
+  "folder": "3 Piece Inside Plus 1",
   "previewStartingState": {
     "rotation": 180.0,
     "velocity": 0

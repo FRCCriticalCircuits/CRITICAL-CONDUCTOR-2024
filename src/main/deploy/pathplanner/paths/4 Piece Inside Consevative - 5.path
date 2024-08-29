@@ -16,19 +16,25 @@
     },
     {
       "anchor": {
-        "x": 2.5050915556376565,
-        "y": 4.30988061976124
+        "x": 2.4989264367017943,
+        "y": 4.240644205851619
       },
       "prevControl": {
-        "x": 2.3050915556376563,
-        "y": 4.30988061976124
+        "x": 1.7261263418788593,
+        "y": 4.601006808290463
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "4 Piece Inside Consevative - Link 3"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.35,
+      "rotationDegrees": 180.0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [
     {
@@ -51,14 +57,14 @@
   ],
   "globalConstraints": {
     "maxVelocity": 2.0,
-    "maxAcceleration": 1.8,
+    "maxAcceleration": 1.9,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 150.0,
-    "rotateFast": false
+    "rotation": 163.33735308083533,
+    "rotateFast": true
   },
   "reversed": false,
   "folder": "4 Piece Inside Consevative",

@@ -3,29 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2,
-        "y": 5.55
+        "x": 0.64,
+        "y": 4.5
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.4,
-        "y": 5.55
+        "x": 1.3386144840268221,
+        "y": 3.744848992381349
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.528154752195015,
-        "y": 5.55
+        "x": 7.653457882944388,
+        "y": 1.732910514121565
       },
       "prevControl": {
-        "x": 1.528154752195015,
-        "y": 5.55
+        "x": 3.2183818213790283,
+        "y": 1.688853467152373
+      },
+      "nextControl": {
+        "x": 8.330400988751125,
+        "y": 1.7396351145103737
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.314313587482273,
+        "y": 0.9545693509991673
+      },
+      "prevControl": {
+        "x": 8.960483609697095,
+        "y": 1.5273109615986677
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "4 Piece Inside Consevative - Link 1"
+      "linkedName": "Simple Centre Line Open - Link 1"
     }
   ],
   "rotationTargets": [],
@@ -33,7 +49,7 @@
   "eventMarkers": [
     {
       "name": "Intake",
-      "waypointRelativePos": 0.5,
+      "waypointRelativePos": 0.35,
       "command": {
         "type": "sequential",
         "data": {
@@ -50,20 +66,20 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 1.4,
-    "maxAcceleration": 1.6,
+    "maxVelocity": 3.5,
+    "maxAcceleration": 3.2,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0,
+    "rotation": 75.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "4 Piece Inside Consevative",
+  "folder": "Simple Centre Line Open",
   "previewStartingState": {
-    "rotation": 180.0,
+    "rotation": 120.0,
     "velocity": 0
   },
   "useDefaultConstraints": false

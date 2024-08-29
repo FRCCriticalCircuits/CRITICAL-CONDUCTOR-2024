@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.4989264367017943,
-        "y": 4.240644205851619
+        "x": 1.441414260288271,
+        "y": 4.53787583782681
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.4989264367017943,
-        "y": 4.549057681869162
+        "x": 2.6896972577487204,
+        "y": 0.5727416105995006
       },
       "isLocked": false,
-      "linkedName": "4 Piece Inside Consevative - Link 3"
+      "linkedName": "Simple Centre Line Open - Link 2"
     },
     {
       "anchor": {
-        "x": 1.2,
-        "y": 5.55
+        "x": 7.462544012744556,
+        "y": 2.2322237131057445
       },
       "prevControl": {
-        "x": 1.7,
-        "y": 5.55
+        "x": 6.199575332961041,
+        "y": 1.0867404919067447
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,20 +32,20 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 3.2,
+    "maxAcceleration": 2.8,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0,
+    "rotation": -160.7099537808113,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "4 Piece Inside Consevative",
+  "folder": "Simple Centre Line Open",
   "previewStartingState": {
-    "rotation": 150.0,
+    "rotation": 140.0,
     "velocity": 0
   },
   "useDefaultConstraints": false

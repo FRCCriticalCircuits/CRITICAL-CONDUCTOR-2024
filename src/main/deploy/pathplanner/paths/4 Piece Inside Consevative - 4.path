@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.533077793428314,
-        "y": 6.809984529059967
+        "x": 2.528154752195015,
+        "y": 6.7994709155786826
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.033077793428314,
-        "y": 6.809984529059967
+        "x": 2.028154752195015,
+        "y": 6.7994709155786826
       },
       "isLocked": false,
       "linkedName": "4 Piece Inside Consevative - Link 2"
@@ -33,7 +33,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 2.0,
-    "maxAcceleration": 1.8,
+    "maxAcceleration": 2.1,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },

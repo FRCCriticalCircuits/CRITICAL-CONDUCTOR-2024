@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 2.533077793428314,
-        "y": 6.809984529059967
+        "x": 2.528154752195015,
+        "y": 6.7994709155786826
       },
       "prevControl": {
-        "x": 1.8096777939547408,
-        "y": 6.616150083396349
+        "x": 1.5884621314091067,
+        "y": 6.457450772253014
       },
       "nextControl": null,
       "isLocked": false,
@@ -39,7 +39,7 @@
   "eventMarkers": [
     {
       "name": "Intake",
-      "waypointRelativePos": 0.5,
+      "waypointRelativePos": 0.4,
       "command": {
         "type": "sequential",
         "data": {
@@ -57,7 +57,7 @@
   ],
   "globalConstraints": {
     "maxVelocity": 1.8,
-    "maxAcceleration": 1.5,
+    "maxAcceleration": 1.8,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },

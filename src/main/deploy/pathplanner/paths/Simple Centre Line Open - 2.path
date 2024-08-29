@@ -3,37 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2,
-        "y": 5.55
+        "x": 8.314313587482273,
+        "y": 0.9545693509991673
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.4,
-        "y": 5.55
+        "x": 7.770943341528902,
+        "y": -0.20559955252289716
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Simple Centre Line Open - Link 1"
     },
     {
       "anchor": {
-        "x": 2.528154752195015,
-        "y": 5.55
+        "x": 1.441414260288271,
+        "y": 4.53787583782681
       },
       "prevControl": {
-        "x": 1.528154752195015,
-        "y": 5.55
+        "x": 1.588271083518912,
+        "y": 3.539249439858451
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "4 Piece Inside Consevative - Link 1"
+      "linkedName": "Simple Centre Line Open - Link 2"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Intake",
-      "waypointRelativePos": 0.5,
+      "name": "Aim",
+      "waypointRelativePos": 0.7,
       "command": {
         "type": "sequential",
         "data": {
@@ -41,7 +41,7 @@
             {
               "type": "named",
               "data": {
-                "name": "Intake"
+                "name": "aim"
               }
             }
           ]
@@ -50,20 +50,20 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 1.4,
-    "maxAcceleration": 1.6,
+    "maxVelocity": 3.5,
+    "maxAcceleration": 3.2,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0,
+    "rotation": 147.52880770915147,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "4 Piece Inside Consevative",
+  "folder": "Simple Centre Line Open",
   "previewStartingState": {
-    "rotation": 180.0,
+    "rotation": 75.0,
     "velocity": 0
   },
   "useDefaultConstraints": false
