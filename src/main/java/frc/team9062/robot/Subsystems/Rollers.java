@@ -1,5 +1,9 @@
 package frc.team9062.robot.Subsystems;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
@@ -16,11 +20,13 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team9062.robot.Constants;
+import frc.team9062.robot.Subsystems.Drive.SwerveSubsystem;
+import frc.team9062.robot.Util.SystemState;
 
 public class Rollers extends SubsystemBase {
     private static Rollers instance;
     private CANSparkMax shooter, shooter_follower;
-    private CANSparkMax intake;
+    private TalonFX intake;
     private RelativeEncoder intake_encoder, shooter_encoder;
     private SparkPIDController intakePID, shooterPID;
     private SimpleMotorFeedforward shooter_arbFeedforward, intake_arbFeedforward;
@@ -33,61 +39,75 @@ public class Rollers extends SubsystemBase {
     private Debouncer right_debouncer = new Debouncer(Constants.INTAKE_DEBOUNCE_TIME, DebounceType.kFalling);
 
     public Rollers() {
-        intake = new CANSparkMax(Constants.DEVICE_IDs.ROLLER_ID, MotorType.kBrushless);
+        intake = new TalonFX(Constants.DEVICE_IDs.ROLLER_ID);
         shooter = new CANSparkMax(Constants.DEVICE_IDs.SHOOTER_ID, MotorType.kBrushless);
         shooter_follower = new CANSparkMax(Constants.DEVICE_IDs.SHOOTER_FOLLOWER_ID, MotorType.kBrushless);
 
-        intake.restoreFactoryDefaults();
+        //intake.restoreFactoryDefaults();
         shooter.restoreFactoryDefaults();
         shooter_follower.restoreFactoryDefaults();
 
         intake.setInverted(true);
+        shooter.setInverted(true);
 
         // -----MOTORS-----
 
-        shooter_follower.follow(shooter);
+        // --- INTAKE CONFIG ---
 
-        intake.setSmartCurrentLimit(Constants.PHYSICAL_CONSTANTS.INTAKE_CURRENT_LIMIT);
+        TalonFXConfiguration intake_config = new TalonFXConfiguration();
+
+        intake_config.CurrentLimits.withSupplyCurrentLimit(Constants.PHYSICAL_CONSTANTS.INTAKE_CURRENT_LIMIT);
+        intake_config.CurrentLimits.withSupplyCurrentLimitEnable(true);
+
+        intake_config.Feedback.withSensorToMechanismRatio(Constants.PHYSICAL_CONSTANTS.INTAKE_GEAR_RATIO * (1 / (Constants.PHYSICAL_CONSTANTS.INTAKE_WHEEL_DIAMETER_FEET * Math.PI)));
+
+        intake_config.MotorOutput.withNeutralMode(NeutralModeValue.Brake);
+
+        intake_config.Slot0.withKP(4);
+        intake_config.Slot0.withKI(0);
+        intake_config.Slot0.withKD(0.4);
+
+        // --------------------
+
+        intake.getConfigurator().apply(intake_config);
         shooter.setSmartCurrentLimit(Constants.PHYSICAL_CONSTANTS.SHOOTER_CURRENT_LIMIT);
         shooter_follower.setSmartCurrentLimit(Constants.PHYSICAL_CONSTANTS.SHOOTER_CURRENT_LIMIT);
 
-        intake.enableVoltageCompensation(Constants.PHYSICAL_CONSTANTS.NOMINAL_VOLTAGE);
+        //intake.enableVoltageCompensation(Constants.PHYSICAL_CONSTANTS.NOMINAL_VOLTAGE);
         shooter.enableVoltageCompensation(Constants.PHYSICAL_CONSTANTS.NOMINAL_VOLTAGE);
         shooter_follower.enableVoltageCompensation(Constants.PHYSICAL_CONSTANTS.NOMINAL_VOLTAGE);
 
-        intake.setClosedLoopRampRate(0.2);
+        //intake.setClosedLoopRampRate(0.2);
         shooter.setClosedLoopRampRate(0.1);
         shooter_follower.setClosedLoopRampRate(0.1);
+
+        shooter_follower.follow(shooter, true);
 
         // ----------------
 
         // -----ENCODERS-----
 
-        intake_encoder = intake.getEncoder();
+        //intake_encoder = intake.getEncoder();
         shooter_encoder = shooter.getEncoder();
 
-        intake_encoder.setPositionConversionFactor(1 / Constants.PHYSICAL_CONSTANTS.INTAKE_GEAR_RATIO * Constants.PHYSICAL_CONSTANTS.INTAKE_WHEEL_DIAMETER_FEET * Math.PI);
-        intake_encoder.setVelocityConversionFactor((1 / Constants.PHYSICAL_CONSTANTS.INTAKE_GEAR_RATIO * Constants.PHYSICAL_CONSTANTS.INTAKE_WHEEL_DIAMETER_FEET * Math.PI) / 60);
+        //intake_encoder.setPositionConversionFactor(1 / Constants.PHYSICAL_CONSTANTS.INTAKE_GEAR_RATIO * Constants.PHYSICAL_CONSTANTS.INTAKE_WHEEL_DIAMETER_FEET * Math.PI);
+        //intake_encoder.setVelocityConversionFactor((1 / Constants.PHYSICAL_CONSTANTS.INTAKE_GEAR_RATIO * Constants.PHYSICAL_CONSTANTS.INTAKE_WHEEL_DIAMETER_FEET * Math.PI) / 60);
         
         shooter_encoder.setPositionConversionFactor(Constants.PHYSICAL_CONSTANTS.SHOOTER_GEAR_RATIO * Constants.PHYSICAL_CONSTANTS.SHOOTER_WHEEL_DIAMETER_FEET * Math.PI);
         shooter_encoder.setVelocityConversionFactor((Constants.PHYSICAL_CONSTANTS.SHOOTER_GEAR_RATIO * Constants.PHYSICAL_CONSTANTS.SHOOTER_WHEEL_DIAMETER_FEET * Math.PI) / 60);
 
-        intake_encoder.setPosition(0);
+        //intake_encoder.setPosition(0);
 
         // ------------------
 
         // -----PID-----
 
-        intakePID = intake.getPIDController();
+        //intakePID = intake.getPIDController();
         shooterPID = shooter.getPIDController();
 
-        intakePID.setP(Constants.TUNED_CONSTANTS.INTAKE_PIDF0_P, 0);
-        intakePID.setI(Constants.TUNED_CONSTANTS.INTAKE_PIDF0_I, 0);
-        intakePID.setD(Constants.TUNED_CONSTANTS.INTAKE_PIDF0_D, 0);
-
-        intakePID.setP(Constants.TUNED_CONSTANTS.INTAKE_PIDF1_P, 1);
-        intakePID.setI(Constants.TUNED_CONSTANTS.INTAKE_PIDF1_I, 1);
-        intakePID.setD(Constants.TUNED_CONSTANTS.INTAKE_PIDF1_D, 1);
+        //intakePID.setP(Constants.TUNED_CONSTANTS.INTAKE_PIDF0_P, 0);
+        //intakePID.setI(Constants.TUNED_CONSTANTS.INTAKE_PIDF0_I, 0);
+        //intakePID.setD(Constants.TUNED_CONSTANTS.INTAKE_PIDF0_D, 0);
 
         shooterPID.setP(Constants.TUNED_CONSTANTS.SHOOTER_PIDF0_P, 0);
         shooterPID.setI(Constants.TUNED_CONSTANTS.SHOOTER_PIDF0_I, 0);
@@ -109,7 +129,7 @@ public class Rollers extends SubsystemBase {
         );
         
         shooterPID.setFeedbackDevice(shooter_encoder);
-        intakePID.setFeedbackDevice(intake_encoder);
+        //intakePID.setFeedbackDevice(intake_encoder);
 
         // -------------
 
@@ -117,11 +137,9 @@ public class Rollers extends SubsystemBase {
         shooter.burnFlash();
         shooter_follower.burnFlash();
 
-        intake.setIdleMode(IdleMode.kBrake);
+        //intake.setIdleMode(IdleMode.kBrake);
         shooter.setIdleMode(IdleMode.kCoast);
-        shooter_follower.setIdleMode(IdleMode.kCoast);
-
-        
+        shooter_follower.setIdleMode(IdleMode.kCoast);   
     }
 
     public static Rollers getInstance() {
@@ -145,6 +163,7 @@ public class Rollers extends SubsystemBase {
     }
 
     public void setIntakeVelocity(double velocity) {
+        /*
         intakePID.setReference(
             velocity, 
             ControlType.kVelocity,
@@ -152,6 +171,9 @@ public class Rollers extends SubsystemBase {
             intake_arbFeedforward.calculate(velocity),
             ArbFFUnits.kVoltage
         );
+        */
+
+        intake.setControl(new VelocityVoltage(velocity));
     }
 
     public void setIntakeState(INTAKE_STATE state) {
@@ -169,12 +191,13 @@ public class Rollers extends SubsystemBase {
     public void intake() {
         if (smartIntake) {
             if (!isWithGamePiece()) {
-                setIntakeVelocity(2.5);
+                setIntakeVelocity(8
+                );
             } else {
-                setIntakeVelocity(0);
+                setIntakeRaw(0);
             }
         } else {
-            setIntakeVelocity(2.5);
+            setIntakeVelocity(8);
         }
     }
 
@@ -191,16 +214,21 @@ public class Rollers extends SubsystemBase {
         }
         */
 
-        setIntakeVelocity(2.5);
+        setIntakeVelocity(8);
     }
 
     public void outake() {
-        setIntakeVelocity(-2);
+        setIntakeVelocity(-5);
     }
     
+    public void setRelativeVelocity() {
+        
+
+        setShooterVelocity(intake_accel);
+    }
 
     public void stop() {
-        intake.setVoltage(0);
+        intake.set(0);
         shooter.setVoltage(0);
     }
 
@@ -213,11 +241,7 @@ public class Rollers extends SubsystemBase {
     }
 
     public double getIntakeVelocity() {
-        return intake_encoder.getVelocity();
-    }
-    
-    public double getIntakePosition() {
-        return intake_encoder.getPosition();
+        return intake.getVelocity().getValue();
     }
 
     public double getShooterCurrent() {
@@ -225,7 +249,7 @@ public class Rollers extends SubsystemBase {
     }
 
     public double getIntakeCurrent() {
-        return intake.getOutputCurrent();
+        return intake.getStatorCurrent().getValue();
     }
 
     public double getIntakeFilteredCurrent() {
@@ -286,7 +310,7 @@ public class Rollers extends SubsystemBase {
     public void periodic() {
         switch (intake_state) {
             case IDLE:
-                setIntakeVelocity(0);
+                setIntakeRaw(0);
                 break;
             case INTAKING:
                 intake();
