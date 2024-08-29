@@ -200,14 +200,14 @@ public class Module {
     public SwerveModulePosition getSwerveModulePosition() {
         return new SwerveModulePosition(
             getDistance(), 
-            getAngle()            
+            Rotation2d.fromRadians(getAbsoluteAngleRad())            
         );
     }
 
     public SwerveModuleState getSwerveModuleState() {
         return new SwerveModuleState(
             getVelocity(), 
-            getAngle()
+            Rotation2d.fromRadians(getAbsoluteAngleRad())
         );
     }
 
