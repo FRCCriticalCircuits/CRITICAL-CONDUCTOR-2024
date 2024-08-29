@@ -32,7 +32,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot Far"
+            "name": "Shoot Close"
           }
         },
         {
@@ -50,7 +50,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot Far"
+            "name": "Shoot Close"
           }
         }
       ]

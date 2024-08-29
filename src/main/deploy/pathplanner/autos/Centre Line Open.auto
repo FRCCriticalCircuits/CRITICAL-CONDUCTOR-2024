@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.63,
-      "y": 4.49
+      "x": 1.2,
+      "y": 4.2
     },
-    "rotation": -60.0
+    "rotation": 180.0
   },
   "command": {
     "type": "sequential",
@@ -24,6 +24,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Shoot CloseF"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Centre Line Open - 3"
@@ -33,6 +39,24 @@
           "type": "path",
           "data": {
             "pathName": "Centre Line Open - 4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot CloseF"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Centre Line Open - 5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Close"
           }
         }
       ]

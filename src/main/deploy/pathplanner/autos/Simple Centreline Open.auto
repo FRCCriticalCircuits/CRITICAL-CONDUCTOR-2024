@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.63,
-      "y": 4.49
+      "x": 0.64,
+      "y": 4.5
     },
     "rotation": 120.0
   },
@@ -20,19 +20,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Centre Line Open - 1"
+            "pathName": "Simple Centre Line Open - 1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Centre Line Open Extention - 1"
+            "pathName": "Simple Centre Line Open - 2"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ScoreSubwoofer"
+            "name": "Shoot Close"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Simple Centre Line Open - 3"
           }
         }
       ]
