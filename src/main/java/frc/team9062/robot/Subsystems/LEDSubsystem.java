@@ -21,13 +21,13 @@ public class LEDSubsystem extends CriticalSubsystem {
     
 
     public LEDSubsystem() {
-        led = new CriticalLED(0, 16);
+        led = new CriticalLED(0, 27);
 
         led_map.put(LED_STATE.DISABLED, new staticColor(led, Color.kDarkRed));
         led_map.put(LED_STATE.DEFAULT, new staticColor(led, Color.kGreen));
-        led_map.put(LED_STATE.INTAKING, new strobeColor(led, 100, Color.kYellow));
-        led_map.put(LED_STATE.SHOOTING, new staticColor(led, Color.kWhite));
-        led_map.put(LED_STATE.CONFIRM, new strobeColor(led, 40, Color.kGreen, 1));
+        led_map.put(LED_STATE.INTAKING, new strobeColor(led, 200, Color.kYellow));
+        led_map.put(LED_STATE.SHOOTING, new strobeColor(led, 20, Color.kWhite));
+        led_map.put(LED_STATE.CONFIRM, new strobeColor(led, 80, Color.kGreen, 1));
         led_map.put(LED_STATE.ALIGNING, new strobeColor(led, 100, Color.kWhite));
 
         led.startLEDManagerThread();
@@ -52,7 +52,7 @@ public class LEDSubsystem extends CriticalSubsystem {
         }
         
         switch (state) {
-            case CONFIRM -> {
+            case CLIMBING -> {
 
             }
             default -> {
