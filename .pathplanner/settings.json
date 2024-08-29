@@ -3,17 +3,19 @@
   "robotLength": 0.6731,
   "holonomicMode": true,
   "pathFolders": [
+    "3 Piece Inside Plus 1",
     "4 Piece Inside",
+    "4 Piece Inside Consevative",
     "Centre Line Open",
     "Centre Line Open Extensions",
     "Centre Line Tight",
     "Centre Line Tight Extensions",
-    "4 Piece Inside Consevative"
+    "Simple Centre Line Open"
   ],
   "autoFolders": [],
-  "defaultMaxVel": 5.0,
-  "defaultMaxAccel": 3.0,
+  "defaultMaxVel": 4.0,
+  "defaultMaxAccel": 3.5,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
-  "maxModuleSpeed": 5.2
+  "maxModuleSpeed": 4.2
 }
